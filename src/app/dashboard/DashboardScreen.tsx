@@ -3,11 +3,9 @@
 // WRITES: none
 // AI RULES: no AI suggestions, no interpretation, no automation
 
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export function DashboardScreen() {
-  const navigate = useNavigate();
-
   return (
     <div className="screen dashboard">
       <header>
@@ -16,12 +14,12 @@ export function DashboardScreen() {
       </header>
 
       <div className="primary-actions">
-        <button className="btn primary" onClick={() => navigate("/project/new")}>
+        <Link className="btn primary" to="/project/new">
           New project
-        </button>
-        <button className="btn secondary" onClick={() => navigate("/project/new")}>
+        </Link>
+        <Link className="btn secondary" to="/project/existing">
           Add to existing project
-        </button>
+        </Link>
       </div>
 
       <section className="project-tiles">

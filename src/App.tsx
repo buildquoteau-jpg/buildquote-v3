@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DashboardScreen } from "./app/dashboard/DashboardScreen";
+import { ExistingProjectScreen } from "./app/project/ExistingProjectScreen";
 import { ProjectSetupScreen } from "./app/project/ProjectSetupScreen";
 import { ScopeInputScreen } from "./app/project/ScopeInputScreen";
 import { ComponentGroupsScreen } from "./app/project/ComponentGroupsScreen";
@@ -17,6 +18,7 @@ function App() {
 
         {/* S2 — Project Setup */}
         <Route path="/project/new" element={<ProjectSetupScreen />} />
+        <Route path="/project/existing" element={<ExistingProjectScreen />} />
 
         {/* S3 — Scope Input */}
         <Route path="/project/:projectId/scope" element={<ScopeInputScreen />} />
