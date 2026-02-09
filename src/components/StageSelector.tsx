@@ -15,22 +15,22 @@ export function StageSelector({
 }: StageSelectorProps) {
   return (
     <div className="stage-selector">
-      {BUILD_STAGES.map((stage) => (
-        <label key={stage} className="stage-option">
-          <input
-            type="radio"
-            name="buildStage"
-            value={stage}
-            checked={selected === stage}
-            onChange={() => onSelect(stage)}
-          />
-          <span>{stage}</span>
-        </label>
-      ))}
+      <div className="stage-pills">
+        {BUILD_STAGES.map((stage) => (
+          <button
+            key={stage}
+            type="button"
+            className={`stage-pill${selected === stage ? " selected" : ""}`}
+            onClick={() => onSelect(stage)}
+          >
+            {stage}
+          </button>
+        ))}
+      </div>
       {selected === "Builder Custom Stage" && (
         <input
           type="text"
-          placeholder='Example: Pool house framing'
+          placeholder="Example: Pool house framing"
           value={customLabel}
           onChange={(e) => onCustomLabelChange(e.target.value)}
           className="custom-stage-input"
