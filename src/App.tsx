@@ -6,6 +6,18 @@ import { ComponentGroupsScreen } from "./app/project/ComponentGroupsScreen";
 import { BuildUpScreen } from "./app/project/BuildUpScreen";
 import { ReviewScreen } from "./app/project/ReviewScreen";
 import { PreviewScreen } from "./app/project/PreviewScreen";
+
+// Manufacturer Portal
+import { ManufacturerDashboardScreen } from "./app/manufacturer/ManufacturerDashboardScreen";
+import { ManufacturerSystemsListScreen } from "./app/manufacturer/systems/ManufacturerSystemsListScreen";
+import { NewManufacturerSystemScreen } from "./app/manufacturer/systems/NewManufacturerSystemScreen";
+import { ManufacturerSystemDetailScreen } from "./app/manufacturer/systems/ManufacturerSystemDetailScreen";
+import { ManufacturerDocumentsListScreen } from "./app/manufacturer/documents/ManufacturerDocumentsListScreen";
+import { ManufacturerDocumentUploadScreen } from "./app/manufacturer/documents/ManufacturerDocumentUploadScreen";
+
+// Admin
+import { ReviewQueueScreen } from "./app/admin/ReviewQueueScreen";
+
 import "./App.css";
 
 function App() {
@@ -44,6 +56,20 @@ function App() {
           path="/project/:projectId/preview"
           element={<PreviewScreen />}
         />
+
+        {/* ── Manufacturer Portal ── */}
+        <Route path="/manufacturer" element={<ManufacturerDashboardScreen />} />
+        <Route path="/manufacturer/systems" element={<ManufacturerSystemsListScreen />} />
+        <Route path="/manufacturer/systems/new" element={<NewManufacturerSystemScreen />} />
+        <Route
+          path="/manufacturer/systems/:systemMappingId"
+          element={<ManufacturerSystemDetailScreen />}
+        />
+        <Route path="/manufacturer/documents" element={<ManufacturerDocumentsListScreen />} />
+        <Route path="/manufacturer/documents/upload" element={<ManufacturerDocumentUploadScreen />} />
+
+        {/* ── Admin ── */}
+        <Route path="/admin/review" element={<ReviewQueueScreen />} />
       </Routes>
     </BrowserRouter>
   );
