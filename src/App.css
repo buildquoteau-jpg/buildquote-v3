@@ -36,3 +36,195 @@
   color: #888;
   font-size: 0.875rem;
 }
+
+/* ── Project Setup Screen ── */
+
+.project-setup {
+  max-width: 640px;
+}
+
+.project-setup h2 {
+  margin-bottom: 1.5rem;
+}
+
+.field {
+  margin-bottom: 1.25rem;
+}
+
+.field > label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.375rem;
+  font-size: 0.9375rem;
+}
+
+.field input[type="text"] {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  background: #1a1a1a;
+  color: inherit;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.field input[type="text"]:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+/* ── Address Finder ── */
+
+.address-input-wrapper {
+  position: relative;
+}
+
+.address-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  pointer-events: none;
+}
+
+.address-input {
+  width: 100%;
+  padding: 0.625rem 0.75rem 0.625rem 2.5rem !important;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  background: #1a1a1a;
+  color: inherit;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.address-input:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.address-hint {
+  margin: 0.375rem 0 0;
+  font-size: 0.8125rem;
+  color: #777;
+}
+
+/* ── Stage Selector Pills ── */
+
+.stage-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stage-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.stage-pill {
+  padding: 0.4375rem 0.875rem;
+  border-radius: 100px;
+  border: 1px solid #3a3a3a;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.875rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.stage-pill:hover {
+  border-color: #646cff;
+  color: #fff;
+}
+
+.stage-pill.selected {
+  background: #646cff;
+  border-color: #646cff;
+  color: #fff;
+  font-weight: 500;
+}
+
+.custom-stage-input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  background: #1a1a1a;
+  color: inherit;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.custom-stage-input:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+/* ── Light mode overrides ── */
+
+@media (prefers-color-scheme: light) {
+  .field input[type="text"],
+  .address-input,
+  .custom-stage-input {
+    background: #fff;
+    border-color: #d0d0d0;
+  }
+
+  .stage-pill {
+    border-color: #d0d0d0;
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  .stage-pill:hover {
+    border-color: #646cff;
+    color: #333;
+  }
+
+  .stage-pill.selected {
+    background: #646cff;
+    border-color: #646cff;
+    color: #fff;
+  }
+}
+
+/* ── Google Places dropdown styling ── */
+
+.pac-container {
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-family: inherit;
+  margin-top: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pac-container {
+    background: #2a2a2a;
+    color: #fff;
+  }
+  .pac-item {
+    border-top-color: #3a3a3a;
+    color: #ccc;
+  }
+  .pac-item:hover {
+    background: #333;
+  }
+  .pac-item-query {
+    color: #fff;
+  }
+  .pac-matched {
+    color: #646cff;
+  }
+}

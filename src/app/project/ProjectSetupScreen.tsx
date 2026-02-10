@@ -3,6 +3,7 @@
 // AI RULES: AI does not validate or restrict stages
 
 import { useState } from "react";
+import { AddressFinder } from "../../components/AddressFinder";
 import { StageSelector } from "../../components/StageSelector";
 import type { BuildStage } from "../../types/stage";
 
@@ -28,12 +29,7 @@ export function ProjectSetupScreen() {
 
       <div className="field">
         <label>Site address</label>
-        <input
-          type="text"
-          placeholder="Address lookup or manual entry"
-          value={siteAddress}
-          onChange={(e) => setSiteAddress(e.target.value)}
-        />
+        <AddressFinder value={siteAddress} onChange={setSiteAddress} />
       </div>
 
       <div className="field">
