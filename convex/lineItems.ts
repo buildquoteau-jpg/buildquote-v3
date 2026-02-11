@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getCompatibilityRuleByDriver } from "./compatibility";
 
 // OWNS: line item CRUD
 // DOES NOT DECIDE: specs, quantities, suitability (builder decides all)
@@ -14,7 +15,8 @@ const unitValidator = v.union(
 const sourceValidator = v.union(
   v.literal("builder_defined"),
   v.literal("ai_suggested"),
-  v.literal("imported")
+  v.literal("imported"),
+  v.literal("system_required")
 );
 
 export const listByQuoteRequest = query({
@@ -63,6 +65,69 @@ export const addLineItem = mutation({
   },
 });
 
+
+export const updateDriverSelection = mutation({
+  args: {
+    quoteRequestId: v.id("quoteRequests"),
+    componentGroupId: v.id("componentGroups"),
+    systemId: v.string(),
+    driverValue: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existingRequiredItems = await ctx.db
+      .query("lineItems")
+      .withIndex("by_quoteRequest", (q) =>
+        q.eq("quoteRequestId", args.quoteRequestId)
+      )
+      .collect();
+
+    for (const lineItem of existingRequiredItems) {
+      if (lineItem.source === "system_required") {
+        await ctx.db.delete(lineItem._id);
+      }
+    }
+
+    const rule = await getCompatibilityRuleByDriver(ctx, {
+      systemId: args.systemId,
+      driverValue: args.driverValue,
+    });
+
+    if (!rule) {
+      return;
+    }
+
+    const uniqueRequiredComponentIds = [...new Set(rule.requiredComponentIds)];
+
+    for (const requiredComponentId of uniqueRequiredComponentIds) {
+      const component = (await ctx.db.get(requiredComponentId)) as
+        | {
+            description: string;
+            spec?: string;
+            dimensions?: string;
+            unit: "each" | "pack" | "box" | "bag";
+          }
+        | null;
+
+      if (!component) {
+        continue;
+      }
+
+      await ctx.db.insert("lineItems", {
+        quoteRequestId: args.quoteRequestId,
+        componentGroupId: args.componentGroupId,
+        isDriver: false,
+        description: component.description,
+        spec: component.spec,
+        dimensions: component.dimensions,
+        unit: component.unit,
+        quantity: 1,
+        source: "system_required",
+        createdAt: Date.now(),
+      });
+    }
+  },
+});
+
 export const updateLineItem = mutation({
   args: {
     lineItemId: v.id("lineItems"),
@@ -76,7 +141,7 @@ export const updateLineItem = mutation({
   handler: async (ctx, args) => {
     const { lineItemId, ...updates } = args;
     const filtered = Object.fromEntries(
-      Object.entries(updates).filter(([_, val]) => val !== undefined)
+      Object.entries(updates).filter(([, val]) => val !== undefined)
     );
     await ctx.db.patch(lineItemId, filtered);
   },

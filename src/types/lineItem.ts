@@ -2,7 +2,7 @@ import type { Id } from "../../convex/_generated/dataModel";
 
 export type PurchaseUnit = "each" | "pack" | "box" | "bag";
 
-export type LineItemSource = "builder_defined" | "ai_suggested" | "imported";
+export type LineItemSource = "builder_defined" | "ai_suggested" | "imported" | "system_required";
 
 export interface LineItem {
   _id: Id<"lineItems">;
