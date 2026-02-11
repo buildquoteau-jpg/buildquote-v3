@@ -7,6 +7,12 @@ import { BuildUpScreen } from "./app/project/BuildUpScreen";
 import { ReviewScreen } from "./app/project/ReviewScreen";
 import { PreviewScreen } from "./app/project/PreviewScreen";
 
+// Auth
+import { SignInScreen } from "./app/auth/SignInScreen";
+
+// Settings
+import { SettingsScreen } from "./app/settings/SettingsScreen";
+
 // Manufacturer Portal
 import { ManufacturerDashboardScreen } from "./app/manufacturer/ManufacturerDashboardScreen";
 import { ManufacturerSystemsListScreen } from "./app/manufacturer/systems/ManufacturerSystemsListScreen";
@@ -24,6 +30,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* ── Auth ── */}
+        <Route path="/sign-in/*" element={<SignInScreen />} />
+
         {/* S1 — Builder Dashboard */}
         <Route path="/" element={<DashboardScreen />} />
 
@@ -56,6 +65,9 @@ function App() {
           path="/project/:projectId/preview"
           element={<PreviewScreen />}
         />
+
+        {/* ── Settings ── */}
+        <Route path="/settings" element={<SettingsScreen />} />
 
         {/* ── Manufacturer Portal ── */}
         <Route path="/manufacturer" element={<ManufacturerDashboardScreen />} />

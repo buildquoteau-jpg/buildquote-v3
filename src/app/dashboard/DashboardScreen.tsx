@@ -8,11 +8,31 @@ import { useNavigate } from "react-router-dom";
 export function DashboardScreen() {
   const navigate = useNavigate();
 
+  // TODO: get builder from auth context once Clerk + Convex are wired
+  const builder = null as any;
+
   return (
     <div className="screen dashboard">
-      <header>
-        <h1>Welcome back</h1>
-        {/* TODO: builder name from auth context */}
+      <header className="dashboard-header">
+        {builder?.logoUrl && (
+          <img
+            src={builder.logoUrl}
+            alt={`${builder.companyName} logo`}
+            className="dashboard-logo"
+          />
+        )}
+        <div>
+          <h1>Welcome back</h1>
+          {builder?.companyName && (
+            <p className="hint">{builder.companyName}</p>
+          )}
+        </div>
+        <button
+          className="btn secondary btn-sm settings-link"
+          onClick={() => navigate("/settings")}
+        >
+          Settings
+        </button>
       </header>
 
       <div className="primary-actions">
@@ -26,7 +46,7 @@ export function DashboardScreen() {
 
       <section className="project-tiles">
         <h2>Projects</h2>
-        {/* TODO: scrollable project tile grid */}
+        {/* TODO: scrollable project tile grid with thumbnails */}
       </section>
 
       <section className="sandbox">

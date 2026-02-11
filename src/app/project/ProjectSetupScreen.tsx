@@ -5,6 +5,7 @@
 import { useState } from "react";
 import { AddressFinder } from "../../components/AddressFinder";
 import { StageSelector } from "../../components/StageSelector";
+import { ImageUploader } from "../../components/ImageUploader";
 import type { BuildStage } from "../../types/stage";
 
 export function ProjectSetupScreen() {
@@ -12,6 +13,14 @@ export function ProjectSetupScreen() {
   const [siteAddress, setSiteAddress] = useState("");
   const [selectedStage, setSelectedStage] = useState<BuildStage | null>(null);
   const [customLabel, setCustomLabel] = useState("");
+  const [_projectImage, setProjectImage] = useState<File | null>(null);
+
+  const handleImageSelected = (file: File) => {
+    setProjectImage(file);
+    // TODO: upload to R2 after project is created and we have projectId
+    // Use projectImageR2Key(projectId, file.name) + uploadImage()
+    // Then call saveProjectImage mutation
+  };
 
   return (
     <div className="screen project-setup">
@@ -39,6 +48,13 @@ export function ProjectSetupScreen() {
           onSelect={setSelectedStage}
           customLabel={customLabel}
           onCustomLabelChange={setCustomLabel}
+        />
+      </div>
+
+      <div className="field">
+        <ImageUploader
+          label="Project photo (optional)"
+          onFileSelected={handleImageSelected}
         />
       </div>
 

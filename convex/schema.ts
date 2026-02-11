@@ -12,6 +12,16 @@ export default defineSchema({
     address: v.optional(v.string()),
     abn: v.optional(v.string()),
     acn: v.optional(v.string()),
+    // Feature 1: passkey preference
+    authPreference: v.optional(
+      v.object({ passkeyEnabled: v.optional(v.boolean()) })
+    ),
+    // Feature 2: logo upload
+    logoR2Key: v.optional(v.string()),
+    logoUrl: v.optional(v.string()),
+    // Feature 4: newsletter opt-in
+    marketingOptIn: v.optional(v.boolean()),
+    marketingOptInAt: v.optional(v.number()),
     createdAt: v.number(),
   }).index("by_email", ["email"]),
 
@@ -21,6 +31,9 @@ export default defineSchema({
     name: v.string(),
     siteAddress: v.string(),
     archived: v.boolean(),
+    // Feature 3: project image
+    imageR2Key: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
     createdAt: v.number(),
   }).index("by_builder", ["builderId"]),
 
