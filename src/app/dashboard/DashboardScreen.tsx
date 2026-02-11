@@ -1,9 +1,9 @@
-// S1 — Builder Dashboard
+// S1 - Builder Dashboard
 // READS: builders, projects, supplierRFQs (summary)
 // WRITES: none
 // AI RULES: no AI suggestions, no interpretation, no automation
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function DashboardScreen() {
   const navigate = useNavigate();
@@ -23,12 +23,11 @@ export function DashboardScreen() {
         )}
         <div>
           <h1>Welcome back</h1>
-          {builder?.companyName && (
-            <p className="hint">{builder.companyName}</p>
-          )}
+          {builder?.companyName && <p className="hint">{builder.companyName}</p>}
         </div>
         <button
           className="btn secondary btn-sm settings-link"
+          type="button"
           onClick={() => navigate("/settings")}
         >
           Settings
@@ -36,12 +35,12 @@ export function DashboardScreen() {
       </header>
 
       <div className="primary-actions">
-        <button className="btn primary" onClick={() => navigate("/project/new")}>
+        <Link className="btn primary" to="/project/new">
           New project
-        </button>
-        <button className="btn secondary" onClick={() => navigate("/project/new")}>
+        </Link>
+        <Link className="btn secondary" to="/project/existing">
           Add to existing project
-        </button>
+        </Link>
       </div>
 
       <section className="project-tiles">
@@ -51,9 +50,7 @@ export function DashboardScreen() {
 
       <section className="sandbox">
         <h3>Sandbox</h3>
-        <p className="hint">
-          Sandbox (practice — suppliers will not be contacted)
-        </p>
+        <p className="hint">Sandbox (practice - suppliers will not be contacted)</p>
       </section>
 
       <section className="archived-projects">

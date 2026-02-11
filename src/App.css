@@ -10,6 +10,13 @@
   margin-bottom: 2rem;
 }
 
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .btn.primary {
   background-color: #646cff;
   color: #fff;
