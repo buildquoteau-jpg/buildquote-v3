@@ -1,14 +1,10 @@
 // S6 — Review & Supplier Details
-// READS: quoteRequests, suppliers, lineItems
-// WRITES: fulfilment, delivery details, supplier message
-// AI RULES: no AI decisions
-// BOUNDARIES: no sending from S6, no bulk send, no materials editing
-
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { SupplierPicker } from "../../components/SupplierPicker";
 import type { Id } from "../../../convex/_generated/dataModel";
 import type { FulfilmentType } from "../../types/quote";
+import { Button, Card, Input, StickyFooter, Textarea, Toggle } from "../../components/ui";
 
 export function ReviewScreen() {
   const navigate = useNavigate();
@@ -25,102 +21,51 @@ export function ReviewScreen() {
   return (
     <div className="screen review">
       <header>
-        <button className="btn secondary" onClick={() => navigate(`/project/${projectId}/build-up`)}>
-          ← Build-Up
-        </button>
+        <Button variant="ghost" onClick={() => navigate(`/project/${projectId}/build-up`)}>← Build-Up</Button>
         <h2>Review & Supplier Details</h2>
       </header>
 
-      {/* Section A — Fulfilment Method */}
-      <section>
+      <Card>
         <h3>Fulfilment</h3>
-        <div className="toggle-group">
-          <button
-            className={fulfilmentType === "delivery" ? "active" : ""}
-            onClick={() => setFulfilmentType("delivery")}
-          >
-            Delivery
-          </button>
-          <button
-            className={fulfilmentType === "pickup" ? "active" : ""}
-            onClick={() => setFulfilmentType("pickup")}
-          >
-            Pickup
-          </button>
+        <Toggle
+          options={[{ label: "Delivery", value: "delivery" }, { label: "Pickup", value: "pickup" }]}
+          value={fulfilmentType}
+          onChange={(value) => setFulfilmentType(value)}
+        />
+        <div className="field" style={{ marginTop: 12 }}>
+          {fulfilmentType === "delivery" ? (
+            <>
+              <Input placeholder="Site address" value={deliveryAddress} onChange={(e) => setDeliveryAddress(e.target.value)} />
+              <Input placeholder="Delivery window (optional)" value={deliveryWindow} onChange={(e) => setDeliveryWindow(e.target.value)} style={{ marginTop: 8 }} />
+            </>
+          ) : (
+            <Input placeholder="Pickup suburb/location (optional)" value={pickupLocation} onChange={(e) => setPickupLocation(e.target.value)} />
+          )}
+          <p className="bq-hint">Details are provided for supplier context only.</p>
         </div>
-        {fulfilmentType === "delivery" ? (
-          <>
-            <input
-              type="text"
-              placeholder="Site address"
-              value={deliveryAddress}
-              onChange={(e) => setDeliveryAddress(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Delivery window (optional)"
-              value={deliveryWindow}
-              onChange={(e) => setDeliveryWindow(e.target.value)}
-            />
-          </>
-        ) : (
-          <input
-            type="text"
-            placeholder="Pickup suburb/location (optional)"
-            value={pickupLocation}
-            onChange={(e) => setPickupLocation(e.target.value)}
-          />
-        )}
-        <p className="hint">Details are provided for supplier context only.</p>
-      </section>
+      </Card>
 
-      {/* Section B — Project Timing */}
-      <section>
-        <h3>Project Timing (optional)</h3>
-        <input
-          type="date"
-          value={projectStartDate}
-          onChange={(e) => setProjectStartDate(e.target.value)}
-        />
-        <input
-          type="date"
-          value={requiredByDate}
-          onChange={(e) => setRequiredByDate(e.target.value)}
-        />
-      </section>
+      <Card style={{ marginTop: 12 }}>
+        <h3>Project timing (optional)</h3>
+        <Input type="date" value={projectStartDate} onChange={(e) => setProjectStartDate(e.target.value)} />
+        <Input type="date" value={requiredByDate} onChange={(e) => setRequiredByDate(e.target.value)} style={{ marginTop: 8 }} />
+      </Card>
 
-      {/* Section C — Message to Supplier */}
-      <section>
+      <Card style={{ marginTop: 12 }}>
         <h3>Message to supplier (optional)</h3>
-        <textarea
-          rows={3}
-          placeholder="Please advise lead times and availability."
-          value={supplierMessage}
-          onChange={(e) => setSupplierMessage(e.target.value)}
-        />
-      </section>
+        <Textarea rows={3} placeholder="Please advise lead times and availability." value={supplierMessage} onChange={(e) => setSupplierMessage(e.target.value)} />
+      </Card>
 
-      {/* Section D — Supplier Selection */}
-      <section>
-        <SupplierPicker
-          suppliers={[]}
-          selectedId={selectedSupplierId}
-          onSelect={setSelectedSupplierId}
-          onAddNew={() => {
-            /* TODO: open add supplier modal */
-          }}
-        />
-      </section>
+      <Card style={{ marginTop: 12 }}>
+        <SupplierPicker suppliers={[]} selectedId={selectedSupplierId} onSelect={setSelectedSupplierId} onAddNew={() => undefined} />
+      </Card>
 
-      {/* Section E — Actions */}
-      <div className="actions">
-        <button className="btn secondary" onClick={() => navigate("/")}>
-          Save draft
-        </button>
-        <button className="btn primary" onClick={() => navigate(`/project/${projectId}/preview`)}>
-          Continue to preview
-        </button>
-      </div>
+      <StickyFooter>
+        <div style={{ display: "flex", gap: 8, justifyContent: "space-between" }}>
+          <Button variant="secondary" onClick={() => navigate("/")}>Save draft</Button>
+          <Button variant="primary" onClick={() => navigate(`/project/${projectId}/preview`)}>Continue to preview</Button>
+        </div>
+      </StickyFooter>
     </div>
   );
 }
