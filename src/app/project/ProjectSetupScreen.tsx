@@ -3,12 +3,14 @@
 // AI RULES: AI does not validate or restrict stages
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AddressFinder } from "../../components/AddressFinder";
 import { StageSelector } from "../../components/StageSelector";
 import { ImageUploader } from "../../components/ImageUploader";
 import type { BuildStage } from "../../types/stage";
 
 export function ProjectSetupScreen() {
+  const navigate = useNavigate();
   const [projectName, setProjectName] = useState("");
   const [siteAddress, setSiteAddress] = useState("");
   const [selectedStage, setSelectedStage] = useState<BuildStage | null>(null);
@@ -22,9 +24,21 @@ export function ProjectSetupScreen() {
     // Then call saveProjectImage mutation
   };
 
+  const handleContinue = () => {
+    // TODO: create project via Convex mutation and use returned projectId
+    // For now, use a placeholder ID to enable navigation flow
+    const projectId = "draft";
+    navigate(`/project/${projectId}/scope`);
+  };
+
   return (
     <div className="screen project-setup">
-      <h2>Project Setup</h2>
+      <header>
+        <button className="btn secondary" onClick={() => navigate("/")}>
+          ← Dashboard
+        </button>
+        <h2>Project Setup</h2>
+      </header>
 
       <div className="field">
         <label>Project name</label>
@@ -58,7 +72,13 @@ export function ProjectSetupScreen() {
         />
       </div>
 
-      <button className="btn primary">Continue</button>
+      <button
+        className="btn primary"
+        onClick={handleContinue}
+        disabled={!projectName.trim() || !selectedStage}
+      >
+        Continue
+      </button>
     </div>
   );
 }

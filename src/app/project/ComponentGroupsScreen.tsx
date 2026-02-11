@@ -3,10 +3,13 @@
 // WRITES: componentGroups (toggle, add)
 // AI RULES: classification only — never adds quantities, never auto-includes silently
 
+import { useNavigate, useParams } from "react-router-dom";
 import { ComponentGroupList } from "../../components/ComponentGroupList";
 import type { Id } from "../../../convex/_generated/dataModel";
 
 export function ComponentGroupsScreen() {
+  const navigate = useNavigate();
+  const { projectId } = useParams<{ projectId: string }>();
   // TODO: wire to Convex queries/mutations
   const groups: Parameters<typeof ComponentGroupList>[0]["groups"] = [];
 
@@ -20,7 +23,12 @@ export function ComponentGroupsScreen() {
 
   return (
     <div className="screen component-groups">
-      <h2>Material Groups</h2>
+      <header>
+        <button className="btn secondary" onClick={() => navigate(`/project/${projectId}/scope`)}>
+          ← Scope
+        </button>
+        <h2>Material Groups</h2>
+      </header>
 
       <ComponentGroupList
         groups={groups}
@@ -28,7 +36,9 @@ export function ComponentGroupsScreen() {
         onAddGroup={handleAddGroup}
       />
 
-      <button className="btn primary">Continue</button>
+      <button className="btn primary" onClick={() => navigate(`/project/${projectId}/build-up`)}>
+        Continue
+      </button>
     </div>
   );
 }

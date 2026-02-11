@@ -5,11 +5,14 @@
 // BOUNDARIES: no sending from S6, no bulk send, no materials editing
 
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { SupplierPicker } from "../../components/SupplierPicker";
 import type { Id } from "../../../convex/_generated/dataModel";
 import type { FulfilmentType } from "../../types/quote";
 
 export function ReviewScreen() {
+  const navigate = useNavigate();
+  const { projectId } = useParams<{ projectId: string }>();
   const [fulfilmentType, setFulfilmentType] = useState<FulfilmentType>("delivery");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [deliveryWindow, setDeliveryWindow] = useState("");
@@ -21,7 +24,12 @@ export function ReviewScreen() {
 
   return (
     <div className="screen review">
-      <h2>Review & Supplier Details</h2>
+      <header>
+        <button className="btn secondary" onClick={() => navigate(`/project/${projectId}/build-up`)}>
+          ← Build-Up
+        </button>
+        <h2>Review & Supplier Details</h2>
+      </header>
 
       {/* Section A — Fulfilment Method */}
       <section>
@@ -106,8 +114,12 @@ export function ReviewScreen() {
 
       {/* Section E — Actions */}
       <div className="actions">
-        <button className="btn secondary">Save draft</button>
-        <button className="btn primary">Continue to preview</button>
+        <button className="btn secondary" onClick={() => navigate("/")}>
+          Save draft
+        </button>
+        <button className="btn primary" onClick={() => navigate(`/project/${projectId}/preview`)}>
+          Continue to preview
+        </button>
       </div>
     </div>
   );

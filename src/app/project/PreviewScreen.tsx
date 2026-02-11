@@ -3,10 +3,20 @@
 // WRITES: supplierRFQ record on send
 // This is the final checkpoint — preview must match sent email 1:1
 
+import { useNavigate, useParams } from "react-router-dom";
+
 export function PreviewScreen() {
+  const navigate = useNavigate();
+  const { projectId } = useParams<{ projectId: string }>();
+
   return (
     <div className="screen preview">
-      <h2>Quote Request Preview</h2>
+      <header>
+        <button className="btn secondary" onClick={() => navigate(`/project/${projectId}/review`)}>
+          ← Review
+        </button>
+        <h2>Quote Request Preview</h2>
+      </header>
 
       {/* Section A — RFQ Preview */}
       <section className="rfq-preview">
@@ -35,9 +45,18 @@ export function PreviewScreen() {
 
       {/* Section C — Final Actions */}
       <div className="actions">
-        <button className="btn secondary">Back to edit</button>
-        <button className="btn secondary">Save draft</button>
-        <button className="btn primary">Send quote request</button>
+        <button className="btn secondary" onClick={() => navigate(`/project/${projectId}/review`)}>
+          Back to edit
+        </button>
+        <button className="btn secondary" onClick={() => navigate("/")}>
+          Save draft
+        </button>
+        <button className="btn primary" onClick={() => {
+          // TODO: call sendQuoteRequest mutation
+          navigate("/");
+        }}>
+          Send quote request
+        </button>
       </div>
     </div>
   );

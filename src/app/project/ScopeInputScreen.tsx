@@ -3,6 +3,7 @@
 // AI RULES: read only — prepares internal understanding, no output yet
 
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { ScopeInput } from "../../components/ScopeInput";
 import { DisclaimerBlock } from "../../components/DisclaimerBlock";
 
@@ -29,6 +30,8 @@ const STAGE_EXAMPLES: Record<string, string> = {
 };
 
 export function ScopeInputScreen() {
+  const navigate = useNavigate();
+  const { projectId } = useParams<{ projectId: string }>();
   const [scopeText, setScopeText] = useState("");
   // TODO: get stage from route/context
   const currentStage = "Decking / Pergola / Outdoor Structures";
@@ -36,7 +39,12 @@ export function ScopeInputScreen() {
 
   return (
     <div className="screen scope-input">
-      <h2>Scope of Works</h2>
+      <header>
+        <button className="btn secondary" onClick={() => navigate("/project/new")}>
+          ← Project Setup
+        </button>
+        <h2>Scope of Works</h2>
+      </header>
 
       <ScopeInput
         value={scopeText}
@@ -46,7 +54,11 @@ export function ScopeInputScreen() {
 
       <DisclaimerBlock />
 
-      <button className="btn primary" disabled={!scopeText.trim()}>
+      <button
+        className="btn primary"
+        disabled={!scopeText.trim()}
+        onClick={() => navigate(`/project/${projectId}/materials`)}
+      >
         Continue
       </button>
     </div>
