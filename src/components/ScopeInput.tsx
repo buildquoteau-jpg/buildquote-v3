@@ -4,15 +4,12 @@ interface ScopeInputProps {
   stageSuggestion?: string;
 }
 
-export function ScopeInput({
-  value,
-  onChange,
-  stageSuggestion,
-}: ScopeInputProps) {
+export function ScopeInput({ value, onChange, stageSuggestion }: ScopeInputProps) {
   return (
     <div className="scope-input">
       <label>Provide a brief scope of works for this quote request.</label>
       <textarea
+        className="bq-textarea"
         rows={3}
         value={value}
         onChange={(e) => onChange(e.target.value)}

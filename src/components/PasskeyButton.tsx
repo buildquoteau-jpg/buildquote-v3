@@ -1,15 +1,11 @@
-// Passkey sign-in CTA component
-// Uses Clerk's passkey/WebAuthn flow when available
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Button } from "./ui/Button";
 
 interface PasskeyButtonProps {
   onSignIn: () => void;
   disabled?: boolean;
 }
 
-/**
- * Check if the browser supports WebAuthn / passkeys.
- */
 function supportsPasskeys(): boolean {
   return (
     typeof window !== "undefined" &&
@@ -18,11 +14,7 @@ function supportsPasskeys(): boolean {
 }
 
 export function PasskeyButton({ onSignIn, disabled }: PasskeyButtonProps) {
-  const [supported, setSupported] = useState(false);
-
-  useEffect(() => {
-    setSupported(supportsPasskeys());
-  }, []);
+  const [supported] = useState(supportsPasskeys());
 
   if (!supported) {
     return (
@@ -33,13 +25,14 @@ export function PasskeyButton({ onSignIn, disabled }: PasskeyButtonProps) {
   }
 
   return (
-    <button
+    <Button
       type="button"
-      className="btn secondary passkey-btn"
+      className="passkey-btn"
+      variant="secondary"
       onClick={onSignIn}
       disabled={disabled}
     >
       Sign in with Face ID / Passkey
-    </button>
+    </Button>
   );
 }

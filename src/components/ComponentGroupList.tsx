@@ -1,4 +1,5 @@
 import type { Id } from "../../convex/_generated/dataModel";
+import { Button } from "./ui/Button";
 
 interface ComponentGroup {
   _id: Id<"componentGroups">;
@@ -14,19 +15,14 @@ interface ComponentGroupListProps {
   onAddGroup: (name: string) => void;
 }
 
-export function ComponentGroupList({
-  groups,
-  onToggle,
-  onAddGroup,
-}: ComponentGroupListProps) {
+export function ComponentGroupList({ groups, onToggle, onAddGroup }: ComponentGroupListProps) {
   const sorted = [...groups].sort((a, b) => a.orderIndex - b.orderIndex);
 
   return (
     <div className="component-group-list">
-      <p className="intro">
-        Based on your scope, the following material groups are typically
-        included. Please untick any that do not apply, or add a group if
-        required.
+      <p className="intro hint">
+        Based on your scope, the following material groups are typically included.
+        Untick any that do not apply, or add a group if required.
       </p>
       {sorted.map((group) => (
         <label key={group._id} className="group-row">
@@ -38,15 +34,16 @@ export function ComponentGroupList({
           <span>{group.name}</span>
         </label>
       ))}
-      <button
+      <Button
         className="add-group-btn"
+        variant="secondary"
         onClick={() => {
           const name = prompt("Component group name:");
           if (name) onAddGroup(name);
         }}
       >
         + Add component group
-      </button>
+      </Button>
     </div>
   );
 }
