@@ -24,6 +24,7 @@ import { ManufacturerDocumentUploadScreen } from "./app/manufacturer/documents/M
 
 // Admin
 import { ReviewQueueScreen } from "./app/admin/ReviewQueueScreen";
+import { DevPanelScreen } from "./app/dev/DevPanelScreen";
 
 import "./App.css";
 
@@ -84,6 +85,9 @@ function App() {
 
         {/* ── Admin ── */}
         <Route path="/admin/review" element={<ReviewQueueScreen />} />
+
+        {/* ── Dev ── */}
+        <Route path="/dev" element={<DevPanelScreen />} />
       </Routes>
     </BrowserRouter>
   );
