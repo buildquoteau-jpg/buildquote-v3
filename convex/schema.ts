@@ -112,7 +112,8 @@ export default defineSchema({
     source: v.union(
       v.literal("builder_defined"),
       v.literal("ai_suggested"),
-      v.literal("imported")
+      v.literal("imported"),
+      v.literal("system_required")
     ),
     originalText: v.optional(v.string()),
 
@@ -343,4 +344,13 @@ export default defineSchema({
     .index("by_system", ["systemId"])
     .index("by_status", ["status"])
     .index("by_docType", ["docType"]),
+
+  compatibilityRules: defineTable({
+    systemId: v.string(),
+    driverAttribute: v.string(),
+    driverValue: v.string(),
+    requiredComponentIds: v.array(v.id("components")),
+  })
+    .index("by_system", ["systemId"])
+    .index("by_system_driver", ["systemId", "driverValue"]),
 });
