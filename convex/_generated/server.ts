@@ -6,7 +6,13 @@ import type { Id } from "./dataModel";
 type FunctionArgs = Record<string, unknown>;
 type FunctionResult = unknown;
 
-interface QueryCtx {
+interface UserIdentity {
+  tokenIdentifier: string;
+  email?: string;
+  subject?: string;
+}
+
+export interface QueryCtx {
   db: {
     get: (id: Id<string>) => Promise<Record<string, unknown> | null>;
     query: (table: string) => {
@@ -20,9 +26,12 @@ interface QueryCtx {
       };
     };
   };
+  auth: {
+    getUserIdentity: () => Promise<UserIdentity | null>;
+  };
 }
 
-interface MutationCtx extends QueryCtx {
+export interface MutationCtx extends QueryCtx {
   db: QueryCtx["db"] & {
     insert: (table: string, doc: Record<string, unknown>) => Promise<Id<string>>;
     patch: (id: Id<string>, fields: Record<string, unknown>) => Promise<void>;

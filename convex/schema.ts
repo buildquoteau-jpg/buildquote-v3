@@ -12,6 +12,16 @@ export default defineSchema({
     address: v.optional(v.string()),
     abn: v.optional(v.string()),
     acn: v.optional(v.string()),
+    // Feature 1: passkey preference
+    authPreference: v.optional(
+      v.object({ passkeyEnabled: v.optional(v.boolean()) })
+    ),
+    // Feature 2: logo upload
+    logoR2Key: v.optional(v.string()),
+    logoUrl: v.optional(v.string()),
+    // Feature 4: newsletter opt-in
+    marketingOptIn: v.optional(v.boolean()),
+    marketingOptInAt: v.optional(v.number()),
     createdAt: v.number(),
   }).index("by_email", ["email"]),
 
@@ -21,6 +31,9 @@ export default defineSchema({
     name: v.string(),
     siteAddress: v.string(),
     archived: v.boolean(),
+    // Feature 3: project image
+    imageR2Key: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
     createdAt: v.number(),
   }).index("by_builder", ["builderId"]),
 
@@ -178,4 +191,156 @@ export default defineSchema({
 
     createdAt: v.number(),
   }).index("by_builder", ["builderId"]),
+
+  // -----------------------------
+  // Manufacturer Portal + Library
+  // -----------------------------
+
+  // 11. manufacturers — manufacturer accounts
+  manufacturers: defineTable({
+    name: v.string(),
+    website: v.optional(v.string()),
+    manufacturerType: v.union(
+      v.literal("proprietary"),
+      v.literal("component"),
+      v.literal("mixed")
+    ),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("approved"),
+      v.literal("suspended")
+    ),
+    notesInternal: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_status", ["status"])
+    .index("by_name", ["name"]),
+
+  // 12. manufacturerUsers — who can access a manufacturer account
+  manufacturerUsers: defineTable({
+    manufacturerId: v.id("manufacturers"),
+    email: v.string(),
+    role: v.union(v.literal("admin"), v.literal("editor")),
+    active: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_manufacturer", ["manufacturerId"])
+    .index("by_email", ["email"]),
+
+  // 13. systems — global (BuildQuote-owned) system master
+  systems: defineTable({
+    nameGeneric: v.string(),
+    systemType: v.union(v.literal("proprietary"), v.literal("non_proprietary")),
+    primaryStages: v.array(v.string()),
+    description: v.optional(v.string()),
+    driverComponentType: v.string(),
+    advisoryOnly: v.boolean(),
+    status: v.union(v.literal("draft"), v.literal("approved"), v.literal("deprecated")),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_status", ["status"])
+    .index("by_name", ["nameGeneric"]),
+
+  // 14. components — canonical component master (NOT the same as componentGroups)
+  components: defineTable({
+    nameGeneric: v.string(),
+    category: v.union(v.literal("driver"), v.literal("dependent"), v.literal("accessory")),
+    isDriver: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_name", ["nameGeneric"])
+    .index("by_category", ["category"]),
+
+  // 15. systemComponents — system ↔ component mapping (powers default tick list + ordering)
+  systemComponents: defineTable({
+    systemId: v.id("systems"),
+    componentId: v.id("components"),
+    defaultIncluded: v.boolean(),
+    dependencyNotes: v.optional(v.string()),
+    uiOrder: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_system", ["systemId"])
+    .index("by_system_order", ["systemId", "uiOrder"]),
+
+  // 16. manufacturerSystems — manufacturer ↔ system mapping + approval status
+  manufacturerSystems: defineTable({
+    manufacturerId: v.id("manufacturers"),
+    systemId: v.id("systems"),
+    marketedName: v.string(),
+    isPrimarySupplier: v.boolean(),
+    status: v.union(
+      v.literal("draft"),
+      v.literal("pending_review"),
+      v.literal("approved"),
+      v.literal("rejected")
+    ),
+    rejectionReason: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_manufacturer", ["manufacturerId"])
+    .index("by_system", ["systemId"])
+    .index("by_status", ["status"]),
+
+  // 17. manufacturerSkus — proprietary SKUs (only required when systemType = proprietary)
+  manufacturerSkus: defineTable({
+    manufacturerId: v.id("manufacturers"),
+    systemId: v.id("systems"),
+    componentId: v.id("components"),
+    skuCode: v.string(),
+    description: v.string(),
+    attributes: v.object({
+      size: v.optional(v.string()),
+      length: v.optional(v.string()),
+      material: v.optional(v.string()),
+      treatment: v.optional(v.string()),
+      profile: v.optional(v.string()),
+      thickness: v.optional(v.string()),
+    }),
+    active: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_manufacturer", ["manufacturerId"])
+    .index("by_system", ["systemId"])
+    .index("by_component", ["componentId"])
+    .index("by_sku", ["skuCode"]),
+
+  // 18. referenceDocuments — global reference docs stored in R2 (approved before visible to builders)
+  referenceDocuments: defineTable({
+    manufacturerId: v.id("manufacturers"),
+    systemId: v.optional(v.id("systems")),
+    componentId: v.optional(v.id("components")),
+    docType: v.union(
+      v.literal("installation"),
+      v.literal("technical"),
+      v.literal("span_table"),
+      v.literal("standard")
+    ),
+    source: v.union(v.literal("manufacturer_pdf"), v.literal("standard")),
+    title: v.string(),
+    version: v.optional(v.string()),
+    r2Key: v.string(),
+    publicUrl: v.optional(v.string()),
+    advisoryOnly: v.boolean(),
+    status: v.union(
+      v.literal("draft"),
+      v.literal("pending_review"),
+      v.literal("approved"),
+      v.literal("rejected")
+    ),
+    rejectionReason: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_manufacturer", ["manufacturerId"])
+    .index("by_system", ["systemId"])
+    .index("by_status", ["status"])
+    .index("by_docType", ["docType"]),
 });

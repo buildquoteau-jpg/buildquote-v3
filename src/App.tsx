@@ -6,12 +6,33 @@ import { ComponentGroupsScreen } from "./app/project/ComponentGroupsScreen";
 import { BuildUpScreen } from "./app/project/BuildUpScreen";
 import { ReviewScreen } from "./app/project/ReviewScreen";
 import { PreviewScreen } from "./app/project/PreviewScreen";
+
+// Auth
+import { SignInScreen } from "./app/auth/SignInScreen";
+
+// Settings
+import { SettingsScreen } from "./app/settings/SettingsScreen";
+
+// Manufacturer Portal
+import { ManufacturerDashboardScreen } from "./app/manufacturer/ManufacturerDashboardScreen";
+import { ManufacturerSystemsListScreen } from "./app/manufacturer/systems/ManufacturerSystemsListScreen";
+import { NewManufacturerSystemScreen } from "./app/manufacturer/systems/NewManufacturerSystemScreen";
+import { ManufacturerSystemDetailScreen } from "./app/manufacturer/systems/ManufacturerSystemDetailScreen";
+import { ManufacturerDocumentsListScreen } from "./app/manufacturer/documents/ManufacturerDocumentsListScreen";
+import { ManufacturerDocumentUploadScreen } from "./app/manufacturer/documents/ManufacturerDocumentUploadScreen";
+
+// Admin
+import { ReviewQueueScreen } from "./app/admin/ReviewQueueScreen";
+
 import "./App.css";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* ── Auth ── */}
+        <Route path="/sign-in/*" element={<SignInScreen />} />
+
         {/* S1 — Builder Dashboard */}
         <Route path="/" element={<DashboardScreen />} />
 
@@ -44,6 +65,23 @@ function App() {
           path="/project/:projectId/preview"
           element={<PreviewScreen />}
         />
+
+        {/* ── Settings ── */}
+        <Route path="/settings" element={<SettingsScreen />} />
+
+        {/* ── Manufacturer Portal ── */}
+        <Route path="/manufacturer" element={<ManufacturerDashboardScreen />} />
+        <Route path="/manufacturer/systems" element={<ManufacturerSystemsListScreen />} />
+        <Route path="/manufacturer/systems/new" element={<NewManufacturerSystemScreen />} />
+        <Route
+          path="/manufacturer/systems/:systemMappingId"
+          element={<ManufacturerSystemDetailScreen />}
+        />
+        <Route path="/manufacturer/documents" element={<ManufacturerDocumentsListScreen />} />
+        <Route path="/manufacturer/documents/upload" element={<ManufacturerDocumentUploadScreen />} />
+
+        {/* ── Admin ── */}
+        <Route path="/admin/review" element={<ReviewQueueScreen />} />
       </Routes>
     </BrowserRouter>
   );
