@@ -1,4 +1,5 @@
 import type { Id } from "../../convex/_generated/dataModel";
+import { Button } from "./ui/Button";
 
 interface SupplierOption {
   _id: Id<"suppliers">;
@@ -13,17 +14,13 @@ interface SupplierPickerProps {
   onAddNew: () => void;
 }
 
-export function SupplierPicker({
-  suppliers,
-  selectedId,
-  onSelect,
-  onAddNew,
-}: SupplierPickerProps) {
+export function SupplierPicker({ suppliers, selectedId, onSelect, onAddNew }: SupplierPickerProps) {
   return (
     <div className="supplier-picker">
       <label>Select supplier</label>
       <p className="hint">Each quote request is sent to one supplier at a time.</p>
       <select
+        className="bq-select"
         value={selectedId ?? ""}
         onChange={(e) => onSelect(e.target.value as Id<"suppliers">)}
       >
@@ -36,9 +33,9 @@ export function SupplierPicker({
           </option>
         ))}
       </select>
-      <button className="add-supplier-btn" onClick={onAddNew}>
+      <Button className="add-supplier-btn" variant="secondary" onClick={onAddNew}>
         + Add new supplier
-      </button>
+      </Button>
     </div>
   );
 }

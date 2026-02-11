@@ -33,7 +33,7 @@ export function StageSelector({
           placeholder="Example: Pool house framing"
           value={customLabel}
           onChange={(e) => onCustomLabelChange(e.target.value)}
-          className="custom-stage-input"
+          className="bq-input custom-stage-input"
         />
       )}
     </div>

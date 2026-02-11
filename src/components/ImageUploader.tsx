@@ -1,6 +1,6 @@
-// Reusable image upload component — used by logo upload and project image upload
 import { useState, useRef } from "react";
 import { validateImage } from "../lib/r2ImageUpload";
+import { Button } from "./ui/Button";
 
 interface ImageUploaderProps {
   label: string;
@@ -42,26 +42,28 @@ export function ImageUploader({
     <div className="image-uploader">
       <label>{label}</label>
 
-      {displayUrl && (
+      {displayUrl ? (
         <div className="image-preview">
           <img src={displayUrl} alt="Preview" />
         </div>
+      ) : (
+        <div className="image-preview-placeholder">No image</div>
       )}
 
       <div className="image-uploader-actions">
-        <button
+        <Button
           type="button"
-          className="btn secondary btn-sm"
+          variant="secondary"
           onClick={() => fileInputRef.current?.click()}
           disabled={disabled}
         >
           {displayUrl ? "Change" : "Choose image"}
-        </button>
+        </Button>
 
         {displayUrl && onRemove && (
-          <button
+          <Button
             type="button"
-            className="btn secondary btn-sm"
+            variant="secondary"
             onClick={() => {
               setPreview(null);
               setError(null);
@@ -71,7 +73,7 @@ export function ImageUploader({
             disabled={disabled}
           >
             Remove
-          </button>
+          </Button>
         )}
       </div>
 

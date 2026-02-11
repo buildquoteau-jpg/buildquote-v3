@@ -1,78 +1,54 @@
-import { useEffect, useRef, useState, useCallback } from "react";
-
-declare global {
-  interface Window {
-    google?: typeof google;
-    _googleMapsCallback?: () => void;
-  }
-}
+import { useEffect, useRef } from "react";
 
 interface AddressFinderProps {
   value: string;
-  onChange: (address: string) => void;
+  onChange: (value: string) => void;
   placeholder?: string;
 }
 
-let googleMapsLoading = false;
-let googleMapsLoaded = false;
-const loadCallbacks: Array<() => void> = [];
-
-function loadGoogleMaps(apiKey: string): Promise<void> {
-  if (googleMapsLoaded && window.google?.maps?.places) {
-    return Promise.resolve();
-  }
-
-  return new Promise((resolve) => {
-    loadCallbacks.push(resolve);
-
-    if (googleMapsLoading) return;
-    googleMapsLoading = true;
-
-    window._googleMapsCallback = () => {
-      googleMapsLoaded = true;
-      googleMapsLoading = false;
-      loadCallbacks.forEach((cb) => cb());
-      loadCallbacks.length = 0;
-    };
-
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=_googleMapsCallback`;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-  });
+interface GoogleAutocompletePlace {
+  formatted_address?: string;
 }
 
-export function AddressFinder({
-  value,
-  onChange,
-  placeholder = "Start typing an address…",
-}: AddressFinderProps) {
+interface GoogleAutocomplete {
+  addListener: (event: "place_changed", callback: () => void) => void;
+  getPlace: () => GoogleAutocompletePlace;
+}
+
+type GoogleAutocompleteCtor = new (
+  input: HTMLInputElement,
+  options: {
+    types: string[];
+    componentRestrictions: { country: string };
+    fields: string[];
+  }
+) => GoogleAutocomplete;
+
+declare global {
+  interface Window {
+    google?: {
+      maps?: {
+        places?: {
+          Autocomplete?: GoogleAutocompleteCtor;
+        };
+      };
+    };
+  }
+}
+
+export function AddressFinder({ value, onChange, placeholder = "Start typing address..." }: AddressFinderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-  const [isLoaded, setIsLoaded] = useState(googleMapsLoaded);
-  const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY as string;
+  const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
 
   useEffect(() => {
-    if (!apiKey) return;
+    const Autocomplete = window.google?.maps?.places?.Autocomplete;
+    if (!apiKey || !inputRef.current || !Autocomplete) return;
 
-    loadGoogleMaps(apiKey).then(() => {
-      setIsLoaded(true);
+    const autocomplete = new Autocomplete(inputRef.current, {
+      types: ["address"],
+      componentRestrictions: { country: "au" },
+      fields: ["formatted_address"],
     });
-  }, [apiKey]);
-
-  const initAutocomplete = useCallback(() => {
-    if (!inputRef.current || !window.google?.maps?.places) return;
-    if (autocompleteRef.current) return;
-
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      inputRef.current,
-      {
-        types: ["address"],
-        componentRestrictions: { country: "au" },
-        fields: ["formatted_address", "address_components"],
-      }
-    );
 
     autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
@@ -80,15 +56,7 @@ export function AddressFinder({
         onChange(place.formatted_address);
       }
     });
-
-    autocompleteRef.current = autocomplete;
-  }, [onChange]);
-
-  useEffect(() => {
-    if (isLoaded) {
-      initAutocomplete();
-    }
-  }, [isLoaded, initAutocomplete]);
+  }, [apiKey, onChange]);
 
   return (
     <div className="address-finder">
@@ -110,14 +78,14 @@ export function AddressFinder({
         <input
           ref={inputRef}
           type="text"
-          className="address-input"
+          className="bq-input address-input"
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
       </div>
       {!apiKey && (
-        <p className="address-hint">
+        <p className="address-hint hint">
           Add VITE_GOOGLE_PLACES_API_KEY to .env.local for address autocomplete
         </p>
       )}
