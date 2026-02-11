@@ -1,32 +1,39 @@
 // S2 — Project Setup
+// OWNS: project context capture (name, site address, stage context).
+// DOES NOT DECIDE: pricing, compliance, supplier eligibility, or quote outcomes.
 // WRITES: project { name, siteAddress, stages[] }
 // AI RULES: AI does not validate or restrict stages
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AddressFinder } from "../../components/AddressFinder";
 import { StageSelector } from "../../components/StageSelector";
 import { ImageUploader } from "../../components/ImageUploader";
+import { readQuoteFlowDraft, writeQuoteFlowDraft } from "../../lib/quoteDraft";
 import type { BuildStage } from "../../types/stage";
 
 export function ProjectSetupScreen() {
   const navigate = useNavigate();
-  const [projectName, setProjectName] = useState("");
-  const [siteAddress, setSiteAddress] = useState("");
-  const [selectedStage, setSelectedStage] = useState<BuildStage | null>(null);
-  const [customLabel, setCustomLabel] = useState("");
-  const [_projectImage, setProjectImage] = useState<File | null>(null);
+  const savedDraft = useMemo(() => readQuoteFlowDraft(), []);
+
+  const [projectName, setProjectName] = useState(savedDraft.projectName);
+  const [siteAddress, setSiteAddress] = useState(savedDraft.siteAddress);
+  const [selectedStage, setSelectedStage] = useState<BuildStage | null>(savedDraft.selectedStage);
+  const [customLabel, setCustomLabel] = useState(savedDraft.customStageLabel);
 
   const handleImageSelected = (file: File) => {
-    setProjectImage(file);
-    // TODO: upload to R2 after project is created and we have projectId
-    // Use projectImageR2Key(projectId, file.name) + uploadImage()
-    // Then call saveProjectImage mutation
+    void file;
+    // Reserved for project image upload flow.
   };
 
   const handleContinue = () => {
-    // TODO: create project via Convex mutation and use returned projectId
-    // For now, use a placeholder ID to enable navigation flow
+    writeQuoteFlowDraft({
+      projectName: projectName.trim(),
+      siteAddress: siteAddress.trim(),
+      selectedStage,
+      customStageLabel: customLabel.trim(),
+    });
+
     const projectId = "draft";
     navigate(`/project/${projectId}/scope`);
   };
@@ -75,7 +82,11 @@ export function ProjectSetupScreen() {
       <button
         className="btn primary"
         onClick={handleContinue}
-        disabled={!projectName.trim() || !selectedStage}
+        disabled={
+          !projectName.trim() ||
+          !selectedStage ||
+          (selectedStage === "Builder Custom Stage" && !customLabel.trim())
+        }
       >
         Continue
       </button>

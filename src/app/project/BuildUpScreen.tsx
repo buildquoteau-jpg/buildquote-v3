@@ -1,18 +1,21 @@
 // S5 — Quote Builder (Specifications & Quantities)
+// OWNS: builder-controlled line-item definition for supplier-ready quote requests.
+// DOES NOT DECIDE: automatic specs, quantities, pricing, or send actions.
 // ⚠️ This is the core screen of BuildQuote. Everything else supports this.
 // READS: componentGroups, lineItems
 // WRITES: lineItems (add, update, remove)
 // AI RULES: inline suggestions only — never auto-edit
 // LAYOUT: single scrollable screen, no wizard, no forced sequencing
 
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { DisclaimerBlock } from "../../components/DisclaimerBlock";
+import { AddMoreGate } from "../../components/AddMoreGate";
 
 export function BuildUpScreen() {
   const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
-  // TODO: wire to Convex queries for componentGroups + lineItems
-  // TODO: for each group, render driver item (if applicable) + line items + custom add
+  const [showAddMoreGate, setShowAddMoreGate] = useState(false);
 
   return (
     <div className="screen build-up">
@@ -25,22 +28,28 @@ export function BuildUpScreen() {
 
       <p className="hint">
         Define specifications and quantities for each material group. You can
-        scroll back and revise at any time.
+        scroll up or down and revise at any time.
       </p>
 
-      {/* TODO: render component groups with their line items */}
-      {/* Each group:
-        [ Component Group Header ]
-          ├─ Driver Item (if applicable)
-          ├─ One or more Line Items (LineItemEditor)
-          └─ + Add custom line item
-      */}
+      <div className="build-up-placeholder">
+        <p>Component groups and line items will render here.</p>
+      </div>
 
       <DisclaimerBlock />
 
-      <button className="btn primary" onClick={() => navigate(`/project/${projectId}/review`)}>
-        Continue
-      </button>
+      {showAddMoreGate ? (
+        <AddMoreGate
+          onAddScope={() => navigate(`/project/${projectId}/scope`)}
+          onAddLineItem={() => {
+            setShowAddMoreGate(false);
+          }}
+          onContinue={() => navigate(`/project/${projectId}/review`)}
+        />
+      ) : (
+        <button className="btn primary" onClick={() => setShowAddMoreGate(true)}>
+          Continue
+        </button>
+      )}
     </div>
   );
 }
