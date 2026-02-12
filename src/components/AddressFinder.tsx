@@ -1,62 +1,82 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { loadGooglePlacesScript, getGooglePlacesApiKey } from "../lib/googlePlaces";
+import type { ProjectAddress } from "../types/project";
 
 interface AddressFinderProps {
   value: string;
   onChange: (value: string) => void;
+  onAddressSelect: (address: ProjectAddress) => void;
   placeholder?: string;
 }
 
-interface GoogleAutocompletePlace {
-  formatted_address?: string;
-}
+type AddressFinderMode = "loading" | "ready" | "fallback";
 
-interface GoogleAutocomplete {
-  addListener: (event: "place_changed", callback: () => void) => void;
-  getPlace: () => GoogleAutocompletePlace;
-}
-
-type GoogleAutocompleteCtor = new (
-  input: HTMLInputElement,
-  options: {
-    types: string[];
-    componentRestrictions: { country: string };
-    fields: string[];
-  }
-) => GoogleAutocomplete;
-
-declare global {
-  interface Window {
-    google?: {
-      maps?: {
-        places?: {
-          Autocomplete?: GoogleAutocompleteCtor;
-        };
-      };
-    };
-  }
-}
-
-export function AddressFinder({ value, onChange, placeholder = "Start typing address..." }: AddressFinderProps) {
+export function AddressFinder({
+  value,
+  onChange,
+  onAddressSelect,
+  placeholder = "Start typing address...",
+}: AddressFinderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
+  const listenerRef = useRef<google.maps.MapsEventListener | null>(null);
+  const apiKey = getGooglePlacesApiKey();
+  const [mode, setMode] = useState<AddressFinderMode>(() =>
+    apiKey ? "loading" : "fallback"
+  );
 
   useEffect(() => {
-    const Autocomplete = window.google?.maps?.places?.Autocomplete;
-    if (!apiKey || !inputRef.current || !Autocomplete) return;
+    let cancelled = false;
 
-    const autocomplete = new Autocomplete(inputRef.current, {
-      types: ["address"],
-      componentRestrictions: { country: "au" },
-      fields: ["formatted_address"],
-    });
+    if (!apiKey) {
+      listenerRef.current?.remove();
+      listenerRef.current = null;
+      return () => undefined;
+    }
 
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      if (place?.formatted_address) {
-        onChange(place.formatted_address);
-      }
-    });
-  }, [apiKey, onChange]);
+    void loadGooglePlacesScript()
+      .then(() => {
+        if (cancelled || !inputRef.current) return;
+
+        const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
+          types: ["address"],
+          fields: ["formatted_address", "geometry.location", "place_id"],
+        });
+
+        listenerRef.current?.remove();
+        listenerRef.current = autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          const formattedAddress = place.formatted_address?.trim();
+          const lat = place.geometry?.location?.lat();
+          const lng = place.geometry?.location?.lng();
+          const placeId = place.place_id?.trim();
+
+          if (!formattedAddress || lat === undefined || lng === undefined || !placeId) {
+            return;
+          }
+
+          onChange(formattedAddress);
+          onAddressSelect({
+            formattedAddress,
+            lat,
+            lng,
+            placeId,
+          });
+        });
+
+        setMode("ready");
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setMode("fallback");
+        }
+      });
+
+    return () => {
+      cancelled = true;
+      listenerRef.current?.remove();
+      listenerRef.current = null;
+    };
+  }, [apiKey, onAddressSelect, onChange]);
 
   return (
     <div className="address-finder">
@@ -81,14 +101,18 @@ export function AddressFinder({ value, onChange, placeholder = "Start typing add
           className="bq-input address-input"
           placeholder={placeholder}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(event) => onChange(event.target.value)}
         />
       </div>
-      {!apiKey && (
+
+      {mode === "loading" ? (
+        <p className="address-hint hint">Loading address autocomplete...</p>
+      ) : null}
+      {mode === "fallback" ? (
         <p className="address-hint hint">
-          Add VITE_GOOGLE_PLACES_API_KEY to .env.local for address autocomplete
+          Address autocomplete unavailable. Manual entry is still saved.
         </p>
-      )}
+      ) : null}
     </div>
   );
 }

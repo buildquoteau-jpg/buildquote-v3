@@ -10,7 +10,7 @@ export function PreviewScreen() {
   return (
     <div className="screen preview">
       <header>
-        <Button variant="secondary" onClick={() => navigate(`/project/${projectId}/review`)}>
+        <Button variant="secondary" onClick={() => navigate(`/app/project/${projectId}/review`)}>
           ← Review
         </Button>
         <h2>Quote Request Preview</h2>
@@ -32,13 +32,16 @@ export function PreviewScreen() {
       </Card>
 
       <StickyFooter>
-        <Button variant="secondary" onClick={() => navigate(`/project/${projectId}/review`)}>
+        <Button
+          variant="secondary"
+          onClick={() => navigate(`/app/project/${projectId}/review`)}
+        >
           Back to edit
         </Button>
-        <Button variant="secondary" onClick={() => navigate("/")}>Save draft</Button>
+        <Button variant="secondary" onClick={() => navigate("/app")}>Save draft</Button>
         <Button
           onClick={() => {
-            navigate("/");
+            navigate("/app");
           }}
         >
           Send quote request

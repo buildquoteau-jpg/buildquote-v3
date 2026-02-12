@@ -1,4 +1,4 @@
-import { QueryCtx, MutationCtx } from "../_generated/server";
+import type { QueryCtx, MutationCtx } from "../_generated/server";
 
 // ------------------------------------------------------------------
 // RBAC helpers for Manufacturer Portal & Admin Review
@@ -71,9 +71,10 @@ export async function assertManufacturerRole(
  */
 export async function requireAdmin(ctx: Ctx) {
   const email = await getIdentityEmail(ctx);
-  const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+  const adminEmails = ((globalThis as { process?: { env?: Record<string, string | undefined> } })
+    .process?.env?.ADMIN_EMAILS ?? "")
     .split(",")
-    .map((e) => e.trim().toLowerCase())
+    .map((e: string) => e.trim().toLowerCase())
     .filter(Boolean);
   if (!adminEmails.includes(email.toLowerCase())) {
     throw new Error("Not an admin");

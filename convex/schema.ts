@@ -29,12 +29,25 @@ export default defineSchema({
   projects: defineTable({
     builderId: v.id("builders"),
     name: v.string(),
-    siteAddress: v.string(),
+    siteAddress: v.optional(v.string()),
+    siteAddressDetails: v.optional(
+      v.object({
+        formattedAddress: v.string(),
+        lat: v.number(),
+        lng: v.number(),
+        placeId: v.string(),
+      })
+    ),
+    status: v.optional(v.union(v.literal("draft"), v.literal("active"))),
+    setupStage: v.optional(v.string()),
+    setupCustomStageLabel: v.optional(v.string()),
+    builderNotes: v.optional(v.string()),
     archived: v.boolean(),
     // Feature 3: project image
     imageR2Key: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
     createdAt: v.number(),
+    updatedAt: v.optional(v.number()),
   }).index("by_builder", ["builderId"]),
 
   // 3. quoteRequests — the core RFQ record

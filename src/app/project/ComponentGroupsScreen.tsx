@@ -38,7 +38,9 @@ export function ComponentGroupsScreen() {
       </Card>
 
       <StickyFooter>
-        <Button onClick={() => navigate(`/app/project/${projectId}/build-up`)}>Continue</Button>
+        <Button onClick={() => navigate(`/app/project/${projectId}/build-up`)}>
+          Continue
+        </Button>
       </StickyFooter>
     </div>
   );

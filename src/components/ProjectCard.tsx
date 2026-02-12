@@ -4,6 +4,7 @@ import { Card } from "./ui/Card";
 interface ProjectCardProps {
   name: string;
   stageLabel: string;
+  status?: "draft" | "active";
   imageUrl?: string;
   className?: string;
   onClick?: () => void;
@@ -12,6 +13,7 @@ interface ProjectCardProps {
 export function ProjectCard({
   name,
   stageLabel,
+  status = "active",
   imageUrl,
   className = "",
   onClick,
@@ -44,7 +46,12 @@ export function ProjectCard({
 
       <div className="project-card-meta">
         <strong>{name}</strong>
-        <span className="bq-badge bq-badge--neutral">{stageLabel}</span>
+        <div className="project-card-badges">
+          <span className="bq-badge bq-badge--neutral">{stageLabel}</span>
+          {status === "draft" ? (
+            <span className="bq-badge bq-badge--warning">Draft</span>
+          ) : null}
+        </div>
       </div>
 
       {interactive ? (

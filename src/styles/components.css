@@ -1,4 +1,5 @@
-.bq-btn {
+.bq-btn,
+.bg-btn {
   min-height: 48px;
   border-radius: var(--bq-radius-md);
   border: 1px solid transparent;
@@ -17,11 +18,15 @@
 
 .bq-btn:hover,
 .bq-btn:focus-visible,
-.bq-btn:active {
+.bq-btn:active,
+.bg-btn:hover,
+.bg-btn:focus-visible,
+.bg-btn:active {
   color: inherit;
 }
 
 .bq-btn:focus-visible,
+.bg-btn:focus-visible,
 .bq-icon-btn:focus-visible,
 .bq-toggle-btn:focus-visible,
 .bq-text-field-input:focus-visible,
@@ -33,48 +38,59 @@
 }
 
 .bq-btn:active,
+.bg-btn:active,
 .bq-icon-btn:active,
 .bq-toggle-btn:active {
   transform: scale(0.98);
 }
 
-.bq-btn--primary {
+.bq-btn--primary,
+.bg-btn--primary {
   background: var(--bq-primary);
   color: var(--bq-surface);
   box-shadow: var(--bq-shadow-sm);
 }
 
 .bq-btn--primary:focus-visible,
-.bq-btn--primary:hover {
+.bq-btn--primary:hover,
+.bg-btn--primary:focus-visible,
+.bg-btn--primary:hover {
   background: color-mix(in srgb, var(--bq-primary) 92%, black);
   color: var(--bq-surface);
 }
 
-.bq-btn--secondary {
+.bq-btn--secondary,
+.bg-btn--secondary {
   background: var(--bq-surface);
   border-color: var(--bq-border);
   color: var(--bq-primary);
 }
 
 .bq-btn--secondary:focus-visible,
-.bq-btn--secondary:hover {
+.bq-btn--secondary:hover,
+.bg-btn--secondary:focus-visible,
+.bg-btn--secondary:hover {
   background: color-mix(in srgb, var(--bq-bg) 80%, var(--bq-surface));
   color: var(--bq-primary);
 }
 
-.bq-btn--accent {
+.bq-btn--accent,
+.bg-btn--accent {
   background: var(--bq-accent);
   color: var(--bq-surface);
   box-shadow: var(--bq-shadow-sm);
 }
 
 .bq-btn--accent:focus-visible,
-.bq-btn--accent:hover {
+.bq-btn--accent:hover,
+.bg-btn--accent:focus-visible,
+.bg-btn--accent:hover {
   background: color-mix(in srgb, var(--bq-accent) 92%, black);
   color: var(--bq-surface);
 }
 
 .bq-btn:disabled,
+.bg-btn:disabled,
 .bq-icon-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -97,7 +113,8 @@
   background: color-mix(in srgb, var(--bq-bg) 80%, var(--bq-surface));
 }
 
-.bq-card {
+.bq-card,
+.bg-card {
   background: var(--bq-surface);
   border: 1px solid var(--bq-border);
   border-radius: var(--bq-radius-lg);
@@ -122,6 +139,7 @@
 
 .bq-text-field-input,
 .bq-input,
+.bg-input,
 .bq-select,
 .bq-textarea {
   width: 100%;
@@ -143,6 +161,7 @@
 
 .bq-text-field-input:focus,
 .bq-input:focus,
+.bg-input:focus,
 .bq-select:focus,
 .bq-textarea:focus {
   border-color: var(--bq-primary);
@@ -219,6 +238,50 @@
 
 .bq-sticky-footer-content > * {
   flex: 1;
+}
+
+.clerk-root-box,
+.clerk-card-box {
+  width: 100%;
+}
+
+.clerk-card {
+  width: min(100%, 460px);
+  margin: 0 auto;
+}
+
+.clerk-label {
+  color: var(--bq-text);
+  font-weight: 600;
+}
+
+.clerk-input {
+  min-height: 48px;
+}
+
+.clerk-footer-link {
+  color: var(--bq-secondary);
+  font-weight: 600;
+}
+
+.clerk-identity-text {
+  color: var(--bq-text);
+}
+
+.clerk-popover-card {
+  min-width: 220px;
+  border-radius: var(--bq-radius-md);
+}
+
+.clerk-popover-action {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+  min-height: 44px;
+}
+
+.clerk-popover-action-text {
+  color: inherit;
 }
 
 

@@ -4,13 +4,6 @@ import { mutation, query } from "./_generated/server";
 // OWNS: quote request lifecycle (draft → sent)
 // DOES NOT DECIDE: material specs, quantities, supplier eligibility
 
-const scopeValidator = v.object({
-  id: v.string(),
-  stageContext: v.optional(v.string()),
-  scopeText: v.string(),
-  createdAt: v.number(),
-});
-
 export const getQuoteRequest = query({
   args: { quoteRequestId: v.id("quoteRequests") },
   handler: async (ctx, args) => {
@@ -117,7 +110,10 @@ export const updateQuoteMeta = mutation({
       throw new Error("Cannot modify a sent quote request");
     }
     const filtered = Object.fromEntries(
-      Object.entries(updates).filter(([_, val]) => val !== undefined)
+      Object.entries(updates).filter(([key, val]) => {
+        void key;
+        return val !== undefined;
+      })
     );
     await ctx.db.patch(quoteRequestId, {
       ...filtered,

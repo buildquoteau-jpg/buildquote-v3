@@ -14,9 +14,10 @@ export const getBuilder = query({
 export const getBuilderByEmail = query({
   args: { email: v.string() },
   handler: async (ctx, args) => {
+    const email = args.email.trim().toLowerCase();
     return await ctx.db
       .query("builders")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .withIndex("by_email", (q) => q.eq("email", email))
       .first();
   },
 });
@@ -40,6 +41,47 @@ export const createBuilder = mutation({
   },
 });
 
+export const upsertBuilderByEmail = mutation({
+  args: {
+    email: v.string(),
+    firstName: v.optional(v.string()),
+    lastName: v.optional(v.string()),
+    companyName: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const email = args.email.trim().toLowerCase();
+    if (!email) {
+      throw new Error("Email is required");
+    }
+
+    const existing = await ctx.db
+      .query("builders")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .first();
+
+    const firstName = args.firstName?.trim() || "Builder";
+    const lastName = args.lastName?.trim() || "User";
+    const companyName = args.companyName?.trim() || "BuildQuote Builder";
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        firstName: existing.firstName || firstName,
+        lastName: existing.lastName || lastName,
+        companyName: existing.companyName || companyName,
+      });
+      return existing._id;
+    }
+
+    return await ctx.db.insert("builders", {
+      firstName,
+      lastName,
+      companyName,
+      email,
+      createdAt: Date.now(),
+    });
+  },
+});
+
 export const updateBuilder = mutation({
   args: {
     builderId: v.id("builders"),
@@ -54,7 +96,10 @@ export const updateBuilder = mutation({
   handler: async (ctx, args) => {
     const { builderId, ...updates } = args;
     const filtered = Object.fromEntries(
-      Object.entries(updates).filter(([_, val]) => val !== undefined)
+      Object.entries(updates).filter(([key, val]) => {
+        void key;
+        return val !== undefined;
+      })
     );
     await ctx.db.patch(builderId, filtered);
   },

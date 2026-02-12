@@ -35,23 +35,34 @@ createRoot(document.getElementById("root")!).render(
             colorInputBackground: "#FFFFFF",
             colorInputText: "#1F2A33",
             borderRadius: "14px",
+            colorNeutral: "#D7DEE6",
+            colorDanger: "#A94442",
           },
           elements: {
-            card: "clerk-card",
-            formButtonPrimary: "bq-btn bq-btn--primary clerk-btn",
-            formFieldInput: "bq-input clerk-input",
+            rootBox: "clerk-root-box",
+            cardBox: "clerk-card-box",
+            card: "bg-card clerk-card",
+            formButtonPrimary: "bg-btn bg-btn--primary clerk-btn",
+            formFieldInput: "bg-input clerk-input",
+            formFieldLabel: "clerk-label",
             footerActionLink: "clerk-footer-link",
-            socialButtonsBlockButton: "bq-btn bq-btn--secondary clerk-btn",
+            socialButtonsBlockButton: "bg-btn bg-btn--secondary clerk-btn",
+            identityPreviewText: "clerk-identity-text",
+            userButtonPopoverCard: "bg-card clerk-popover-card",
+            userButtonPopoverActionButton: "bg-btn bg-btn--secondary clerk-popover-action",
+            userButtonPopoverActionButtonText: "clerk-popover-action-text",
           },
         }}
       >
         {appWithConvex}
       </ClerkProvider>
     ) : (
-      <>
-        {appWithConvex}
-        {/* Clerk not configured — sign-in screens will show placeholder */}
-      </>
+      <div className="screen">
+        <p className="hint">
+          Missing Clerk publishable key. Set VITE_CLERK_PUBLISHABLE_KEY to run
+          authenticated routes.
+        </p>
+      </div>
     )}
   </StrictMode>
 );

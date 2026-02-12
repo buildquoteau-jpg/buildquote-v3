@@ -1,13 +1,15 @@
 import { useMemo } from "react";
-import { useUser } from "@clerk/clerk-react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useBuilderAccount } from "../hooks/useBuilderAccount";
+import type { ProjectStatus } from "../../types/project";
 
 export interface DashboardProjectCardData {
   id: string;
   name: string;
   imageUrl?: string;
   stageLabel: string;
+  status: ProjectStatus;
 }
 
 export const FALLBACK_PROJECTS: DashboardProjectCardData[] = [
@@ -15,11 +17,13 @@ export const FALLBACK_PROJECTS: DashboardProjectCardData[] = [
     id: "fallback-smith-residence",
     name: "Smith Residence",
     stageLabel: "Framing",
+    status: "active",
   },
   {
     id: "fallback-garden-studio",
     name: "Garden Studio",
     stageLabel: "Decking",
+    status: "draft",
   },
 ];
 
@@ -49,22 +53,13 @@ function readBuilderBusinessName(builderProfile: unknown): string {
 }
 
 export function useBuilderDashboardData() {
-  const { user } = useUser();
-  const clerkFirstName = user?.firstName?.trim() ?? "";
-  const email = user?.primaryEmailAddress?.emailAddress?.trim().toLowerCase() ?? "";
-
-  const builderProfile = useQuery(
-    api.builders.getBuilderByEmail,
-    email ? { email } : "skip"
-  );
-
-  const builderId = builderProfile?._id;
-  const projects = useQuery(
-    api.projects.listProjectsByBuilder,
-    builderId ? { builderId } : "skip"
-  );
+  const { builder, builderId, clerkFirstName, isUserLoaded } = useBuilderAccount();
   const quoteRequests = useQuery(
     api.quoteRequests.listByBuilder,
+    builderId ? { builderId } : "skip"
+  );
+  const projects = useQuery(
+    api.projects.listProjectsByBuilder,
     builderId ? { builderId } : "skip"
   );
 
@@ -90,32 +85,39 @@ export function useBuilderDashboardData() {
 
     return [...projects]
       .filter((project) => !project.archived)
-      .sort((a, b) => b.createdAt - a.createdAt)
+      .sort((a, b) => (b.updatedAt ?? b.createdAt) - (a.updatedAt ?? a.createdAt))
       .map((project) => {
         const key = String(project._id);
+        const setupStageLabel = formatStageLabel(
+          project.setupStage,
+          project.setupCustomStageLabel
+        );
+
         return {
           id: key,
           name: project.name,
           imageUrl: project.imageUrl,
-          stageLabel: stageByProjectId.get(key) ?? "Not started",
+          stageLabel: stageByProjectId.get(key) ?? setupStageLabel,
+          status: project.status ?? "active",
         };
       });
   }, [projects, quoteRequests]);
 
-  const builderBusinessName = readBuilderBusinessName(builderProfile);
-  const welcomeName = clerkFirstName || builderBusinessName;
+  const builderBusinessName = readBuilderBusinessName(builder);
+  const welcomeName =
+    clerkFirstName || builder?.firstName?.trim() || builderBusinessName || undefined;
   const companyName =
-    (builderProfile?.companyName ?? builderBusinessName).trim() || undefined;
+    (builder?.companyName ?? builderBusinessName).trim() || undefined;
 
-  const isBuilderLoading = Boolean(email) && builderProfile === undefined;
   const isProjectLoading = Boolean(builderId) && projects === undefined;
   const isQuotesLoading = Boolean(builderId) && quoteRequests === undefined;
 
   return {
+    builderId,
     companyName,
-    logoUrl: builderProfile?.logoUrl,
+    logoUrl: builder?.logoUrl,
     projectCards,
     welcomeName,
-    isDataLoading: isBuilderLoading || isProjectLoading || isQuotesLoading,
+    isDataLoading: !isUserLoaded || isProjectLoading || isQuotesLoading,
   };
 }

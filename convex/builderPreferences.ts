@@ -95,7 +95,8 @@ export const listMarketingSubscribers = query({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Not authenticated");
     const email = identity.email ?? identity.tokenIdentifier;
-    const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+    const adminEmails = ((globalThis as { process?: { env?: Record<string, string | undefined> } })
+      .process?.env?.ADMIN_EMAILS ?? "")
       .split(",")
       .map((e: string) => e.trim().toLowerCase())
       .filter(Boolean);
@@ -105,8 +106,8 @@ export const listMarketingSubscribers = query({
 
     const all = await ctx.db.query("builders").collect();
     return all
-      .filter((b: any) => b.marketingOptIn === true)
-      .map((b: any) => ({
+      .filter((b) => b.marketingOptIn === true)
+      .map((b) => ({
         email: b.email,
         name: `${b.firstName} ${b.lastName}`,
         companyName: b.companyName,

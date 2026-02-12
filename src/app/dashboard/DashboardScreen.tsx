@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { ProjectCard } from "../../components/ProjectCard";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
-import { IconButton } from "../../components/ui/IconButton";
 import {
   FALLBACK_PROJECTS,
   type DashboardProjectCardData,
@@ -83,15 +82,9 @@ function DashboardContent({
               Profile
             </Button>
           </nav>
-
-          <IconButton
-            type="button"
-            aria-label="Open settings"
-            onClick={() => navigate("/app/settings")}
-          >
-            {"\u2699\uFE0E"}
-          </IconButton>
-          <UserButton afterSignOutUrl="/sign-in" />
+          <div className="dashboard-avatar">
+            <UserButton afterSignOutUrl="/sign-in" />
+          </div>
         </div>
       </header>
 
@@ -114,8 +107,9 @@ function DashboardContent({
                 key={project.id}
                 name={project.name}
                 stageLabel={project.stageLabel}
+                status={project.status}
                 imageUrl={project.imageUrl}
-                onClick={() => navigate(`/app/project/${project.id}/scope`)}
+                onClick={() => navigate(`/app/project/${project.id}/setup`)}
               />
             ))}
           </div>

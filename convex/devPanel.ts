@@ -13,9 +13,10 @@ export const seedDemoData = mutation({
     ).toLowerCase();
 
     const adminEmails = new Set(
-      (process.env.ADMIN_EMAILS ?? "")
+      (((globalThis as { process?: { env?: Record<string, string | undefined> } })
+        .process?.env?.ADMIN_EMAILS) ?? "")
         .split(",")
-        .map((email) => email.trim().toLowerCase())
+        .map((email: string) => email.trim().toLowerCase())
         .filter(Boolean)
     );
     adminEmails.add(FALLBACK_ADMIN_EMAIL);
@@ -48,7 +49,8 @@ export const seedDemoData = mutation({
       .withIndex("by_builder", (q) => q.eq("builderId", builder._id))
       .collect();
 
-    let project = existingProjects.find((p) => p.name === "Dev Panel Demo Project");
+    let project =
+      existingProjects.find((p) => p.name === "Dev Panel Demo Project") ?? null;
 
     if (!project) {
       const projectId = await ctx.db.insert("projects", {
@@ -67,9 +69,9 @@ export const seedDemoData = mutation({
       .withIndex("by_project", (q) => q.eq("projectId", project._id))
       .collect();
 
-    let quoteRequest = projectQuotes.find(
-      (qr) => qr.customStageLabel === "Dev Panel Seed RFQ"
-    );
+    let quoteRequest =
+      projectQuotes.find((qr) => qr.customStageLabel === "Dev Panel Seed RFQ") ??
+      null;
 
     if (quoteRequest) {
       await ctx.db.patch(quoteRequest._id, {

@@ -47,8 +47,9 @@ function ExistingProjectLayout({
               key={project.id}
               name={project.name}
               stageLabel={project.stageLabel}
+              status={project.status}
               imageUrl={project.imageUrl}
-              onClick={() => navigate(`/app/project/${project.id}/scope`)}
+              onClick={() => navigate(`/app/project/${project.id}/setup`)}
             />
           ))}
         </div>

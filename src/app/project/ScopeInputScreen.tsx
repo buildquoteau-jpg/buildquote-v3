@@ -39,7 +39,10 @@ export function ScopeInputScreen() {
   return (
     <div className="screen scope-input">
       <header>
-        <Button variant="secondary" onClick={() => navigate("/app/project/new")}>
+        <Button
+          variant="secondary"
+          onClick={() => navigate(`/app/project/${projectId}/setup`)}
+        >
           ← Project Setup
         </Button>
         <h2>Scope of Works</h2>
