@@ -13,6 +13,8 @@
   margin-top: var(--bq-space-4);
 }
 
+/* ─── Dashboard ─── */
+
 .dashboard-header {
   display: flex;
   align-items: flex-start;
@@ -103,6 +105,8 @@
   font-weight: 700;
 }
 
+/* ─── Project / Section Spacing ─── */
+
 .project-tiles,
 .sandbox,
 .archived-projects,
@@ -116,6 +120,8 @@
 .preview-placeholder {
   margin-top: var(--bq-space-4);
 }
+
+/* ─── Project Cards ─── */
 
 .project-card-list {
   display: grid;
@@ -137,6 +143,7 @@
   border-radius: var(--bq-radius-sm);
   border: 1px solid var(--bq-border);
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .project-card-thumb-placeholder {
@@ -192,6 +199,8 @@
   margin-top: var(--bq-space-3);
 }
 
+/* ─── Sandbox ─── */
+
 .sandbox--interactive {
   cursor: pointer;
   transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
@@ -207,6 +216,8 @@
   outline: 2px solid color-mix(in srgb, var(--bq-accent) 50%, transparent);
   outline-offset: 2px;
 }
+
+/* ─── Address Finder ─── */
 
 .address-input-wrapper {
   position: relative;
@@ -224,6 +235,8 @@
   padding-left: calc(var(--bq-space-5) + var(--bq-space-1)) !important;
 }
 
+/* ─── Stage Pills ─── */
+
 .stage-pills {
   display: flex;
   flex-wrap: wrap;
@@ -238,6 +251,12 @@
   background: var(--bq-surface);
   color: var(--bq-secondary);
   font: inherit;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.stage-pill:hover {
+  background: color-mix(in srgb, var(--bq-bg) 80%, var(--bq-surface));
 }
 
 .stage-pill.selected {
@@ -250,6 +269,8 @@
 .custom-stage-input {
   margin-top: var(--bq-space-2);
 }
+
+/* ─── Component Groups / Checkbox ─── */
 
 .group-row,
 .checkbox-label {
@@ -268,6 +289,114 @@
 .add-supplier-btn {
   margin-top: var(--bq-space-3);
 }
+
+.add-group-inline {
+  margin-top: var(--bq-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-2);
+}
+
+/* ─── Line Items ─── */
+
+.line-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-2);
+  margin-top: var(--bq-space-2);
+}
+
+.line-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bq-space-3);
+  padding: var(--bq-space-2) 0;
+  border-bottom: 1px solid var(--bq-border);
+}
+
+.line-item-row:last-child {
+  border-bottom: none;
+}
+
+.line-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.line-item-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-2);
+  flex-shrink: 0;
+}
+
+.line-item-qty {
+  width: 72px;
+  text-align: center;
+}
+
+.line-item-unit {
+  color: var(--bq-text-muted);
+  font-size: 0.86rem;
+  min-width: 36px;
+}
+
+/* ─── Supplier Tracking ─── */
+
+.supplier-tracking-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--bq-space-3);
+}
+
+.supplier-tracking-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ─── Scope Voice Input ─── */
+
+.scope-textarea-wrapper {
+  position: relative;
+  margin-top: var(--bq-space-2);
+}
+
+.scope-mic-btn {
+  position: absolute;
+  right: var(--bq-space-2);
+  bottom: var(--bq-space-2);
+  min-height: 40px;
+  min-width: 40px;
+}
+
+.scope-mic-btn--active {
+  background: color-mix(in srgb, var(--bq-danger) 16%, var(--bq-surface));
+  border-color: var(--bq-danger);
+  color: var(--bq-danger);
+}
+
+/* ─── Project Overview ─── */
+
+.project-overview-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-2);
+}
+
+.project-overview-image {
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: var(--bq-radius-sm);
+  border: 1px solid var(--bq-border);
+}
+
+/* ─── Image Uploader ─── */
 
 .image-uploader {
   display: flex;
@@ -310,6 +439,8 @@
   font-size: 0.86rem;
 }
 
+/* ─── Misc ─── */
+
 .toggle-group {
   margin-bottom: var(--bq-space-3);
 }
@@ -327,6 +458,29 @@
   justify-content: space-between;
   gap: var(--bq-space-3);
 }
+
+.disclaimer-block {
+  margin-top: var(--bq-space-2);
+}
+
+.disclaimer-toggle {
+  background: none;
+  border: none;
+  color: var(--bq-text-muted);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.disclaimer-text {
+  margin-top: var(--bq-space-2);
+  color: var(--bq-text-muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+/* ─── Landing ─── */
 
 .landing-screen {
   display: flex;
@@ -361,6 +515,8 @@
   gap: var(--bq-space-2);
 }
 
+/* ─── Supplier Cards ─── */
+
 .supplier-card-list {
   margin-top: var(--bq-space-3);
   display: grid;
@@ -380,6 +536,8 @@
   gap: var(--bq-space-2);
   flex-wrap: wrap;
 }
+
+/* ─── Sign In ─── */
 
 .sign-in-container {
   display: flex;
@@ -401,6 +559,8 @@
   flex: 1;
   border-bottom: 1px solid var(--bq-border);
 }
+
+/* ─── Mobile ─── */
 
 @media (max-width: 767px) {
   .screen > header {
@@ -429,7 +589,7 @@
   .primary-actions .bg-btn,
   .landing-actions .bq-btn,
   .landing-actions .bg-btn {
-    min-height: 44px;
+    min-height: 48px;
   }
 
   .primary-actions .bq-btn,
@@ -451,5 +611,13 @@
 
   .supplier-card p {
     word-break: break-word;
+  }
+
+  .line-item-row {
+    flex-wrap: wrap;
+  }
+
+  .stage-pill {
+    min-height: 48px;
   }
 }

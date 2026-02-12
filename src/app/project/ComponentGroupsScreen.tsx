@@ -1,45 +1,133 @@
-// S4 — Suggested Component Groups
-import { useNavigate, useParams } from "react-router-dom";
-import { ComponentGroupList } from "../../components/ComponentGroupList";
+// S6 — Component Groups
+import { useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
 import { StickyFooter } from "../../components/ui/StickyFooter";
-import type { Id } from "../../../convex/_generated/dataModel";
+
+interface ComponentGroup {
+  id: string;
+  name: string;
+  source: "ai_suggested" | "builder_added";
+  included: boolean;
+}
+
+const STAGE_GROUPS: Record<string, string[]> = {
+  Slab: ["Reinforcement Mesh", "Chairs & Spacers", "Edge Form Timbers", "Concrete", "Accessories"],
+  Framing: ["Wall Frames", "Top & Bottom Plates", "Noggings", "Fasteners", "Accessories"],
+  Cladding: ["Cladding Sheets", "Cavity Battens", "Flashings", "Sealants", "Fixings"],
+  Roofing: ["Roofing Sheets", "Ridge Capping", "Flashings", "Screws", "Accessories"],
+  "Decking / Pergola / Outdoor": ["Structural Posts", "Stirrup Anchors", "Concrete", "Fixings", "Accessories"],
+  Services: ["Conduit", "Cable Trays", "Switchboard Components", "Fittings", "Accessories"],
+};
+
+function buildInitialGroups(stage: string): ComponentGroup[] {
+  const names = STAGE_GROUPS[stage] ?? ["General Materials", "Fixings", "Accessories"];
+  return names.map((name, i) => ({
+    id: `group-${i}`,
+    name,
+    source: "ai_suggested",
+    included: true,
+  }));
+}
 
 export function ComponentGroupsScreen() {
   const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
-  const groups: Parameters<typeof ComponentGroupList>[0]["groups"] = [];
+  const [searchParams] = useSearchParams();
+  const stage = searchParams.get("stage") ?? "";
 
-  const handleToggle = (groupId: Id<"componentGroups">, included: boolean) => {
-    void groupId;
-    void included;
+  const [groups, setGroups] = useState<ComponentGroup[]>(() => buildInitialGroups(stage));
+  const [addingGroup, setAddingGroup] = useState(false);
+  const [newGroupName, setNewGroupName] = useState("");
+
+  const handleToggle = (id: string) => {
+    setGroups((prev) =>
+      prev.map((g) => (g.id === id ? { ...g, included: !g.included } : g))
+    );
   };
 
-  const handleAddGroup = (name: string) => {
-    void name;
+  const handleAddGroup = () => {
+    if (!newGroupName.trim()) return;
+    setGroups((prev) => [
+      ...prev,
+      {
+        id: `group-custom-${Date.now()}`,
+        name: newGroupName.trim(),
+        source: "builder_added",
+        included: true,
+      },
+    ]);
+    setNewGroupName("");
+    setAddingGroup(false);
   };
+
+  const includedCount = groups.filter((g) => g.included).length;
 
   return (
     <div className="screen component-groups">
       <header>
-        <Button variant="secondary" onClick={() => navigate(`/app/project/${projectId}/scope`)}>
+        <Button variant="secondary" onClick={() => navigate(`/projects/${projectId}/scope?stage=${encodeURIComponent(stage)}`)}>
           ← Scope
         </Button>
-        <h2>Material Groups</h2>
+        <h2>Component Groups</h2>
       </header>
 
       <Card>
-        <ComponentGroupList
-          groups={groups}
-          onToggle={handleToggle}
-          onAddGroup={handleAddGroup}
-        />
+        <p className="hint">
+          Based on your scope, the following material groups are typically included.
+          Untick any that do not apply, or add a group if required.
+        </p>
+
+        <div className="component-group-list">
+          {groups.map((group) => (
+            <label key={group.id} className="group-row">
+              <input
+                type="checkbox"
+                checked={group.included}
+                onChange={() => handleToggle(group.id)}
+              />
+              <span>{group.name}</span>
+              {group.source === "ai_suggested" ? (
+                <span className="bq-badge bq-badge--neutral" style={{ marginLeft: "auto" }}>Suggested</span>
+              ) : null}
+            </label>
+          ))}
+        </div>
+
+        {addingGroup ? (
+          <div className="add-group-inline">
+            <input
+              type="text"
+              className="bq-input"
+              placeholder="Component group name"
+              value={newGroupName}
+              onChange={(e) => setNewGroupName(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") handleAddGroup(); }}
+              autoFocus
+            />
+            <div className="actions">
+              <Button variant="secondary" onClick={() => { setAddingGroup(false); setNewGroupName(""); }}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddGroup} disabled={!newGroupName.trim()}>
+                Add
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Button className="add-group-btn" variant="secondary" onClick={() => setAddingGroup(true)}>
+            + Add additional component group
+          </Button>
+        )}
       </Card>
 
       <StickyFooter>
-        <Button onClick={() => navigate(`/app/project/${projectId}/build-up`)}>
-          Continue
+        <Button
+          disabled={includedCount === 0}
+          onClick={() => navigate(`/projects/${projectId}/items?stage=${encodeURIComponent(stage)}`)}
+        >
+          Continue ({includedCount} groups)
         </Button>
       </StickyFooter>
     </div>

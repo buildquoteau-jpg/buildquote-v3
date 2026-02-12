@@ -1,24 +1,17 @@
-// S2 - Project Setup
+// S3 — Project Setup
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 import { AddressFinder } from "../../components/AddressFinder";
-import { StageSelector } from "../../components/StageSelector";
 import { ImageUploader } from "../../components/ImageUploader";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
 import { StickyFooter } from "../../components/ui/StickyFooter";
 import { TextField } from "../../components/ui/TextField";
 import { useBuilderAccount } from "../hooks/useBuilderAccount";
-import { BUILD_STAGES, type BuildStage } from "../../types/stage";
 import type { ProjectAddress } from "../../types/project";
-
-function isBuildStage(value: string | undefined): value is BuildStage {
-  if (!value) return false;
-  return BUILD_STAGES.includes(value as BuildStage);
-}
 
 function toManualAddress(value: string): ProjectAddress {
   const formattedAddress = value.trim();
@@ -45,8 +38,6 @@ export function ProjectSetupScreen() {
   const [projectName, setProjectName] = useState("");
   const [siteAddress, setSiteAddress] = useState("");
   const [selectedAddress, setSelectedAddress] = useState<ProjectAddress | null>(null);
-  const [selectedStage, setSelectedStage] = useState<BuildStage | null>(null);
-  const [customLabel, setCustomLabel] = useState("");
   const [builderNotes, setBuilderNotes] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -58,7 +49,7 @@ export function ProjectSetupScreen() {
     if (existingProject === undefined) return;
 
     if (!existingProject) {
-      navigate("/app", { replace: true });
+      navigate("/dashboard", { replace: true });
       return;
     }
     if (hasLoadedInitialStateRef.current) return;
@@ -75,23 +66,6 @@ export function ProjectSetupScreen() {
         (existingProject.siteAddress ? toManualAddress(existingProject.siteAddress) : null)
     );
     setBuilderNotes(existingProject.builderNotes ?? "");
-
-    if (isBuildStage(existingProject.setupStage)) {
-      setSelectedStage(existingProject.setupStage);
-      setCustomLabel(existingProject.setupCustomStageLabel ?? "");
-      return;
-    }
-
-    if (existingProject.setupCustomStageLabel?.trim()) {
-      setSelectedStage("Builder Custom Stage");
-      setCustomLabel(existingProject.setupCustomStageLabel.trim());
-      return;
-    }
-
-    if (existingProject.setupStage?.trim()) {
-      setSelectedStage("Builder Custom Stage");
-      setCustomLabel(existingProject.setupStage.trim());
-    }
   }, [existingProject, existingProjectId, navigate]);
 
   const handleImageSelected = (file: File) => {
@@ -105,13 +79,8 @@ export function ProjectSetupScreen() {
     setSelectedAddress(null);
   };
 
-  const canContinue =
-    Boolean(projectName.trim()) &&
-    Boolean(siteAddress.trim()) &&
-    Boolean(selectedStage) &&
-    (selectedStage !== "Builder Custom Stage" || Boolean(customLabel.trim()));
-
-  const canSaveDraft = Boolean(projectName.trim()) && Boolean(siteAddress.trim());
+  const canContinue = Boolean(projectName.trim()) && Boolean(siteAddress.trim());
+  const canSaveDraft = Boolean(projectName.trim());
 
   const handleSave = async (targetStatus: "draft" | "active") => {
     if (targetStatus === "active" && !canContinue) return;
@@ -123,31 +92,22 @@ export function ProjectSetupScreen() {
     try {
       const builderId = await ensureBuilder();
       const address = selectedAddress ?? toManualAddress(siteAddress);
-      const stage = selectedStage ?? undefined;
-      if (targetStatus === "active" && !stage) {
-        throw new Error("Build stage is required to continue.");
-      }
-
-      const customStageLabel =
-        stage === "Builder Custom Stage" ? customLabel.trim() : undefined;
 
       const savedProjectId = await saveProjectSetup({
         projectId: existingProjectId,
         builderId,
         name: projectName.trim(),
         address,
-        stage,
-        customStageLabel,
         builderNotes: builderNotes.trim(),
         status: targetStatus,
       });
 
       if (targetStatus === "draft") {
-        navigate("/app");
+        navigate("/dashboard");
         return;
       }
 
-      navigate(`/app/project/${savedProjectId}/scope`);
+      navigate(`/projects/${savedProjectId}`);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Failed to save project setup."
@@ -160,10 +120,17 @@ export function ProjectSetupScreen() {
   return (
     <div className="screen project-setup">
       <header>
-        <Button variant="secondary" onClick={() => navigate("/app")}>
-          Back to dashboard
+        <Button
+          variant="secondary"
+          onClick={() =>
+            existingProjectId
+              ? navigate(`/projects/${existingProjectId}`)
+              : navigate("/dashboard")
+          }
+        >
+          ← Back
         </Button>
-        <h2>{existingProjectId ? "Edit Project Setup" : "Project Setup"}</h2>
+        <h2>{existingProjectId ? "Edit Project" : "Project Setup"}</h2>
       </header>
 
       {errorMessage ? <div className="settings-message">{errorMessage}</div> : null}
@@ -188,30 +155,20 @@ export function ProjectSetupScreen() {
         </div>
 
         <div className="field">
-          <label>Build stage</label>
-          <StageSelector
-            selected={selectedStage}
-            onSelect={setSelectedStage}
-            customLabel={customLabel}
-            onCustomLabelChange={setCustomLabel}
+          <ImageUploader
+            label="Project photo (optional)"
+            onFileSelected={handleImageSelected}
           />
         </div>
 
         <div className="field">
-          <label htmlFor="builder-notes">Builder notes</label>
+          <label htmlFor="builder-notes">Notes</label>
           <textarea
             id="builder-notes"
             className="bq-textarea"
             placeholder="Site manager, access constraints, and special conditions."
             value={builderNotes}
             onChange={(event) => setBuilderNotes(event.target.value)}
-          />
-        </div>
-
-        <div className="field">
-          <ImageUploader
-            label="Upload project photo (optional)"
-            onFileSelected={handleImageSelected}
           />
         </div>
       </Card>

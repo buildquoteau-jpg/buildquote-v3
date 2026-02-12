@@ -1,4 +1,4 @@
-// S1 - Builder Dashboard
+// S2 — Builder Dashboard
 import type { KeyboardEvent } from "react";
 import { UserButton } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
@@ -33,7 +33,7 @@ function DashboardContent({
   const welcomeHeading = welcomeName ? `Welcome back, ${welcomeName}` : "Welcome back";
 
   const openSandbox = () => {
-    navigate("/app/project/new?sandbox=1");
+    navigate("/projects/new?sandbox=1");
   };
 
   const handleSandboxKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -69,16 +69,16 @@ function DashboardContent({
 
         <div className="dashboard-header-right">
           <nav className="dashboard-top-nav" aria-label="Dashboard sections">
-            <Button to="/app" variant="secondary" className="dashboard-nav-item is-active">
+            <Button to="/dashboard" variant="secondary" className="dashboard-nav-item is-active">
               Projects
             </Button>
-            <Button to="/app/suppliers" variant="secondary" className="dashboard-nav-item">
+            <Button to="/suppliers" variant="secondary" className="dashboard-nav-item">
               Suppliers
             </Button>
-            <Button to="/app/library" variant="secondary" className="dashboard-nav-item">
+            <Button to="/library" variant="secondary" className="dashboard-nav-item">
               Library
             </Button>
-            <Button to="/app/profile" variant="secondary" className="dashboard-nav-item">
+            <Button to="/profile" variant="secondary" className="dashboard-nav-item">
               Profile
             </Button>
           </nav>
@@ -89,9 +89,9 @@ function DashboardContent({
       </header>
 
       <div className="primary-actions">
-        <Button to="/app/project/new">New project</Button>
-        <Button variant="secondary" to="/app/project/existing">
-          Add to existing project
+        <Button to="/projects/new">New Project</Button>
+        <Button variant="secondary" to="/projects/new">
+          Add to Existing Project
         </Button>
       </div>
 
@@ -109,7 +109,8 @@ function DashboardContent({
                 stageLabel={project.stageLabel}
                 status={project.status}
                 imageUrl={project.imageUrl}
-                onClick={() => navigate(`/app/project/${project.id}/setup`)}
+                createdAt={project.createdAt}
+                onClick={() => navigate(`/projects/${project.id}`)}
               />
             ))}
           </div>

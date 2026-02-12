@@ -1,13 +1,10 @@
 export const BUILD_STAGES = [
-  "Slab / Footings",
-  "Wall Framing",
-  "Roof Framing",
+  "Slab",
+  "Framing",
+  "Cladding",
   "Roofing",
-  "External Cladding",
-  "Internal Lining",
-  "Insulation",
-  "Brickies Corner",
-  "Decking / Pergola / Outdoor Structures",
+  "Decking / Pergola / Outdoor",
+  "Services",
   "Builder Custom Stage",
 ] as const;
 

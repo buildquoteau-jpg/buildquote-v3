@@ -1,11 +1,21 @@
 import type { KeyboardEvent } from "react";
 import { Card } from "./ui/Card";
 
+function formatDate(timestamp?: number): string {
+  if (!timestamp) return "";
+  return new Date(timestamp).toLocaleDateString("en-AU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 interface ProjectCardProps {
   name: string;
   stageLabel: string;
   status?: "draft" | "active";
   imageUrl?: string;
+  createdAt?: number;
   className?: string;
   onClick?: () => void;
 }
@@ -15,6 +25,7 @@ export function ProjectCard({
   stageLabel,
   status = "active",
   imageUrl,
+  createdAt,
   className = "",
   onClick,
 }: ProjectCardProps) {
@@ -52,6 +63,11 @@ export function ProjectCard({
             <span className="bq-badge bq-badge--warning">Draft</span>
           ) : null}
         </div>
+        {createdAt ? (
+          <span className="hint" style={{ fontSize: "0.78rem" }}>
+            Created {formatDate(createdAt)}
+          </span>
+        ) : null}
       </div>
 
       {interactive ? (

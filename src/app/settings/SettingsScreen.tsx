@@ -1,7 +1,7 @@
+// Settings — Billing + Account
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
-import "./settings.css";
 
 export function SettingsScreen() {
   const navigate = useNavigate();
@@ -9,35 +9,34 @@ export function SettingsScreen() {
   return (
     <div className="screen settings-screen">
       <header>
-        <Button variant="secondary" onClick={() => navigate("/app")}>
-          Back to dashboard
+        <Button variant="secondary" onClick={() => navigate("/dashboard")}>
+          ← Dashboard
         </Button>
         <h2>Settings</h2>
       </header>
 
-      <Card className="settings-section">
-        <h3>Profile</h3>
-        <p className="hint">Builder profile details and logo controls.</p>
-        <div className="settings-row">
-          <Button variant="secondary" to="/app/profile">
-            Open profile
+      <Card>
+        <section className="settings-section">
+          <h3>Account</h3>
+          <p className="hint">Manage your account details and authentication preferences.</p>
+          <Button variant="secondary" to="/profile">
+            Edit Profile
           </Button>
-        </div>
+        </section>
       </Card>
 
-      <Card className="settings-section">
-        <h3>Billing</h3>
-        <p className="hint">Billing preferences and invoices will appear here.</p>
+      <Card>
+        <section className="settings-section">
+          <h3>Billing</h3>
+          <p className="hint">Billing and subscription management will be available here.</p>
+        </section>
       </Card>
 
-      <Card className="settings-section">
-        <h3>Sign out</h3>
-        <p className="hint">Return to the sign-in screen.</p>
-        <div className="settings-row">
-          <Button variant="secondary" to="/sign-in">
-            Go to sign in
-          </Button>
-        </div>
+      <Card>
+        <section className="settings-section">
+          <h3>Notifications</h3>
+          <p className="hint">Email notification preferences will be configurable here.</p>
+        </section>
       </Card>
     </div>
   );

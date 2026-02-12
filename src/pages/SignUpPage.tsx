@@ -5,7 +5,7 @@ export function SignUpPage() {
   const { isLoaded, isSignedIn } = useAuth();
 
   if (isLoaded && isSignedIn) {
-    return <Navigate to="/app" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (
@@ -14,7 +14,7 @@ export function SignUpPage() {
         routing="path"
         path="/sign-up"
         signInUrl="/sign-in"
-        afterSignUpUrl="/app"
+        afterSignUpUrl="/dashboard"
       />
     </div>
   );

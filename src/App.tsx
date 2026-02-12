@@ -1,30 +1,25 @@
 import { useAuth } from "@clerk/clerk-react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { DashboardScreen } from "./app/dashboard/DashboardScreen";
-import { ExistingProjectScreen } from "./app/project/ExistingProjectScreen";
 import { ProjectSetupScreen } from "./app/project/ProjectSetupScreen";
+import { ProjectOverviewScreen } from "./app/project/ProjectOverviewScreen";
+import { StageSelectionScreen } from "./app/project/StageSelectionScreen";
 import { ScopeInputScreen } from "./app/project/ScopeInputScreen";
 import { ComponentGroupsScreen } from "./app/project/ComponentGroupsScreen";
-import { BuildUpScreen } from "./app/project/BuildUpScreen";
-import { ReviewScreen } from "./app/project/ReviewScreen";
-import { PreviewScreen } from "./app/project/PreviewScreen";
-import { PlaceholderScreen } from "./app/navigation/PlaceholderScreen";
-import { ManufacturerDashboardScreen } from "./app/manufacturer/ManufacturerDashboardScreen";
-import { ManufacturerSystemsListScreen } from "./app/manufacturer/systems/ManufacturerSystemsListScreen";
-import { NewManufacturerSystemScreen } from "./app/manufacturer/systems/NewManufacturerSystemScreen";
-import { ManufacturerSystemDetailScreen } from "./app/manufacturer/systems/ManufacturerSystemDetailScreen";
-import { ManufacturerDocumentsListScreen } from "./app/manufacturer/documents/ManufacturerDocumentsListScreen";
-import { ManufacturerDocumentUploadScreen } from "./app/manufacturer/documents/ManufacturerDocumentUploadScreen";
-import { ReviewQueueScreen } from "./app/admin/ReviewQueueScreen";
-import { DevPanelScreen } from "./app/dev/DevPanelScreen";
+import { LineItemsScreen } from "./app/project/LineItemsScreen";
+import { SupplierSelectionScreen } from "./app/project/SupplierSelectionScreen";
+import { RfqPreviewScreen } from "./app/project/RfqPreviewScreen";
+import { SupplierTrackingScreen } from "./app/project/SupplierTrackingScreen";
 import { SuppliersScreen } from "./app/suppliers/SuppliersScreen";
-import { SupplierLibraryScreen } from "./app/suppliers/SupplierLibraryScreen";
+import { ProfileScreen } from "./app/settings/ProfileScreen";
+import { DocumentLibraryScreen } from "./app/settings/DocumentLibraryScreen";
+import { SettingsScreen } from "./app/settings/SettingsScreen";
 import { SignInPage } from "./pages/SignInPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { LandingPage } from "./pages/LandingPage";
 import "./App.css";
 
-function ProtectedAppRoute() {
+function ProtectedRoute() {
   const { isLoaded, isSignedIn } = useAuth();
 
   if (!isLoaded) {
@@ -46,50 +41,26 @@ function App() {
         <Route path="/sign-in/*" element={<SignInPage />} />
         <Route path="/sign-up/*" element={<SignUpPage />} />
 
-        <Route path="/app" element={<ProtectedAppRoute />}>
-          <Route index element={<DashboardScreen />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardScreen />} />
 
-          <Route path="suppliers" element={<SuppliersScreen />} />
-          <Route path="library" element={<SupplierLibraryScreen />} />
-          <Route
-            path="profile"
-            element={
-              <PlaceholderScreen
-                title="Profile"
-                description="Profile and account preferences will appear here."
-              />
-            }
-          />
-          <Route path="settings" element={<Navigate to="/app/profile" replace />} />
+          <Route path="/projects/new" element={<ProjectSetupScreen />} />
+          <Route path="/projects/:projectId" element={<ProjectOverviewScreen />} />
+          <Route path="/projects/:projectId/edit" element={<ProjectSetupScreen />} />
+          <Route path="/projects/:projectId/stages" element={<StageSelectionScreen />} />
+          <Route path="/projects/:projectId/scope" element={<ScopeInputScreen />} />
+          <Route path="/projects/:projectId/components" element={<ComponentGroupsScreen />} />
+          <Route path="/projects/:projectId/items" element={<LineItemsScreen />} />
+          <Route path="/projects/:projectId/suppliers" element={<SupplierSelectionScreen />} />
+          <Route path="/projects/:projectId/preview" element={<RfqPreviewScreen />} />
+          <Route path="/projects/:projectId/tracking" element={<SupplierTrackingScreen />} />
 
-          <Route path="project/new" element={<ProjectSetupScreen />} />
-          <Route path="project/existing" element={<ExistingProjectScreen />} />
-          <Route path="project/:projectId/setup" element={<ProjectSetupScreen />} />
-          <Route path="project/:projectId/scope" element={<ScopeInputScreen />} />
-          <Route path="project/:projectId/materials" element={<ComponentGroupsScreen />} />
-          <Route path="project/:projectId/build-up" element={<BuildUpScreen />} />
-          <Route path="project/:projectId/review" element={<ReviewScreen />} />
-          <Route path="project/:projectId/preview" element={<PreviewScreen />} />
+          <Route path="/quote/new" element={<Navigate to="/projects/new" replace />} />
 
-          <Route path="manufacturer" element={<ManufacturerDashboardScreen />} />
-          <Route path="manufacturer/systems" element={<ManufacturerSystemsListScreen />} />
-          <Route path="manufacturer/systems/new" element={<NewManufacturerSystemScreen />} />
-          <Route
-            path="manufacturer/systems/:systemMappingId"
-            element={<ManufacturerSystemDetailScreen />}
-          />
-          <Route
-            path="manufacturer/documents"
-            element={<ManufacturerDocumentsListScreen />}
-          />
-          <Route
-            path="manufacturer/documents/upload"
-            element={<ManufacturerDocumentUploadScreen />}
-          />
-
-          <Route path="admin/review" element={<ReviewQueueScreen />} />
-          <Route path="dev" element={<DevPanelScreen />} />
-          <Route path="*" element={<Navigate to="/app" replace />} />
+          <Route path="/suppliers" element={<SuppliersScreen />} />
+          <Route path="/profile" element={<ProfileScreen />} />
+          <Route path="/library" element={<DocumentLibraryScreen />} />
+          <Route path="/settings" element={<SettingsScreen />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

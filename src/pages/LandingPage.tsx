@@ -1,3 +1,4 @@
+// S1 — Landing Page
 import { useAuth } from "@clerk/clerk-react";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -9,15 +10,16 @@ export function LandingPage() {
     <div className="screen landing-screen">
       <Card className="landing-hero">
         <p className="landing-eyebrow">BuildQuote</p>
-        <h1>Builder-first quoting, from project setup to supplier-ready RFQs.</h1>
+        <h1>Structured RFQs for professional builders.</h1>
         <p className="hint">
-          Save project setup drafts, capture site context, and move from scope to
-          supplier outreach in one workflow.
+          From project setup to supplier-ready quote requests — structure your
+          scope, select materials, and send RFQs in one calm, builder-led
+          workflow.
         </p>
 
         <div className="landing-actions">
-          <Button to={isLoaded && isSignedIn ? "/app" : "/sign-in"}>
-            {isLoaded && isSignedIn ? "Open App" : "Sign In"}
+          <Button to={isLoaded && isSignedIn ? "/dashboard" : "/sign-in"}>
+            {isLoaded && isSignedIn ? "Open Dashboard" : "Sign In"}
           </Button>
           <Button variant="secondary" to="/sign-up">
             Create Account

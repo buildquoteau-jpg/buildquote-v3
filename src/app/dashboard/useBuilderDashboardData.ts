@@ -10,6 +10,7 @@ export interface DashboardProjectCardData {
   imageUrl?: string;
   stageLabel: string;
   status: ProjectStatus;
+  createdAt?: number;
 }
 
 export const FALLBACK_PROJECTS: DashboardProjectCardData[] = [
@@ -18,12 +19,14 @@ export const FALLBACK_PROJECTS: DashboardProjectCardData[] = [
     name: "Smith Residence",
     stageLabel: "Framing",
     status: "active",
+    createdAt: Date.now() - 86400000 * 3,
   },
   {
     id: "fallback-garden-studio",
     name: "Garden Studio",
     stageLabel: "Decking",
     status: "draft",
+    createdAt: Date.now() - 86400000,
   },
 ];
 
@@ -99,6 +102,7 @@ export function useBuilderDashboardData() {
           imageUrl: project.imageUrl,
           stageLabel: stageByProjectId.get(key) ?? setupStageLabel,
           status: project.status ?? "active",
+          createdAt: project.createdAt,
         };
       });
   }, [projects, quoteRequests]);
