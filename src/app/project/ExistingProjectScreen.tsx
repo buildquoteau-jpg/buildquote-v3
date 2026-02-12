@@ -30,7 +30,7 @@ function ExistingProjectLayout({
   return (
     <div className="screen project-existing">
       <header>
-        <Button variant="secondary" onClick={() => navigate("/")}>
+        <Button variant="secondary" onClick={() => navigate("/app")}>
           Back to dashboard
         </Button>
         <h2>Add to Existing Project</h2>
@@ -48,7 +48,7 @@ function ExistingProjectLayout({
               name={project.name}
               stageLabel={project.stageLabel}
               imageUrl={project.imageUrl}
-              onClick={() => navigate(`/project/${project.id}/scope`)}
+              onClick={() => navigate(`/app/project/${project.id}/scope`)}
             />
           ))}
         </div>

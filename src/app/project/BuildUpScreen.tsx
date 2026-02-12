@@ -17,7 +17,7 @@ export function BuildUpScreen() {
   return (
     <div className="screen build-up">
       <header>
-        <button className="btn secondary" onClick={() => navigate(`/project/${projectId}/materials`)}>
+        <button className="btn secondary" onClick={() => navigate(`/app/project/${projectId}/materials`)}>
           ← Materials
         </button>
         <h2>Request Build-Up</h2>
@@ -38,7 +38,7 @@ export function BuildUpScreen() {
 
       <DisclaimerBlock />
 
-      <button className="btn primary" onClick={() => navigate(`/project/${projectId}/review`)}>
+      <button className="btn primary" onClick={() => navigate(`/app/project/${projectId}/review`)}>
         Continue
       </button>
     </div>

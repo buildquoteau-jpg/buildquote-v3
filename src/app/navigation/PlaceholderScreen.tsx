@@ -13,7 +13,7 @@ export function PlaceholderScreen({ title, description }: PlaceholderScreenProps
   return (
     <div className="screen">
       <header>
-        <Button variant="secondary" onClick={() => navigate("/")}>
+        <Button variant="secondary" onClick={() => navigate("/app")}>
           Back to dashboard
         </Button>
         <h2>{title}</h2>

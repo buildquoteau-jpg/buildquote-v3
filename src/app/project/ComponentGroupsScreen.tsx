@@ -23,7 +23,7 @@ export function ComponentGroupsScreen() {
   return (
     <div className="screen component-groups">
       <header>
-        <Button variant="secondary" onClick={() => navigate(`/project/${projectId}/scope`)}>
+        <Button variant="secondary" onClick={() => navigate(`/app/project/${projectId}/scope`)}>
           ← Scope
         </Button>
         <h2>Material Groups</h2>
@@ -38,7 +38,7 @@ export function ComponentGroupsScreen() {
       </Card>
 
       <StickyFooter>
-        <Button onClick={() => navigate(`/project/${projectId}/build-up`)}>Continue</Button>
+        <Button onClick={() => navigate(`/app/project/${projectId}/build-up`)}>Continue</Button>
       </StickyFooter>
     </div>
   );

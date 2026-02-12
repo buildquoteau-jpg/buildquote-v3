@@ -24,7 +24,7 @@ export function ReviewScreen() {
   return (
     <div className="screen review">
       <header>
-        <Button variant="secondary" onClick={() => navigate(`/project/${projectId}/build-up`)}>
+        <Button variant="secondary" onClick={() => navigate(`/app/project/${projectId}/build-up`)}>
           ← Build-Up
         </Button>
         <h2>Review & Supplier Details</h2>
@@ -104,8 +104,8 @@ export function ReviewScreen() {
       </Card>
 
       <StickyFooter>
-        <Button variant="secondary" onClick={() => navigate("/")}>Save draft</Button>
-        <Button onClick={() => navigate(`/project/${projectId}/preview`)}>Continue to preview</Button>
+        <Button variant="secondary" onClick={() => navigate("/app")}>Save draft</Button>
+        <Button onClick={() => navigate(`/app/project/${projectId}/preview`)}>Continue to preview</Button>
       </StickyFooter>
     </div>
   );

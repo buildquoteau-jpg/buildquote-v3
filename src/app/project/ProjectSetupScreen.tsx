@@ -22,13 +22,13 @@ export function ProjectSetupScreen() {
 
   const handleContinue = () => {
     const projectId = "draft";
-    navigate(`/project/${projectId}/scope`);
+    navigate(`/app/project/${projectId}/scope`);
   };
 
   return (
     <div className="screen project-setup">
       <header>
-        <Button variant="secondary" onClick={() => navigate("/")}>← Dashboard</Button>
+        <Button variant="secondary" onClick={() => navigate("/app")}>← Dashboard</Button>
         <h2>Project Setup</h2>
       </header>
 

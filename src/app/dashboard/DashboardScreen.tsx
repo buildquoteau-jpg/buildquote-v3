@@ -1,5 +1,6 @@
 // S1 - Builder Dashboard
 import type { KeyboardEvent } from "react";
+import { UserButton } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { ProjectCard } from "../../components/ProjectCard";
 import { Button } from "../../components/ui/Button";
@@ -33,7 +34,7 @@ function DashboardContent({
   const welcomeHeading = welcomeName ? `Welcome back, ${welcomeName}` : "Welcome back";
 
   const openSandbox = () => {
-    navigate("/project/new?sandbox=1");
+    navigate("/app/project/new?sandbox=1");
   };
 
   const handleSandboxKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -69,16 +70,16 @@ function DashboardContent({
 
         <div className="dashboard-header-right">
           <nav className="dashboard-top-nav" aria-label="Dashboard sections">
-            <Button to="/" variant="secondary" className="dashboard-nav-item is-active">
+            <Button to="/app" variant="secondary" className="dashboard-nav-item is-active">
               Projects
             </Button>
-            <Button to="/suppliers" variant="secondary" className="dashboard-nav-item">
+            <Button to="/app/suppliers" variant="secondary" className="dashboard-nav-item">
               Suppliers
             </Button>
-            <Button to="/library" variant="secondary" className="dashboard-nav-item">
+            <Button to="/app/library" variant="secondary" className="dashboard-nav-item">
               Library
             </Button>
-            <Button to="/profile" variant="secondary" className="dashboard-nav-item">
+            <Button to="/app/profile" variant="secondary" className="dashboard-nav-item">
               Profile
             </Button>
           </nav>
@@ -86,16 +87,17 @@ function DashboardContent({
           <IconButton
             type="button"
             aria-label="Open settings"
-            onClick={() => navigate("/settings")}
+            onClick={() => navigate("/app/settings")}
           >
             {"\u2699\uFE0E"}
           </IconButton>
+          <UserButton afterSignOutUrl="/sign-in" />
         </div>
       </header>
 
       <div className="primary-actions">
-        <Button to="/project/new">New project</Button>
-        <Button variant="secondary" to="/project/existing">
+        <Button to="/app/project/new">New project</Button>
+        <Button variant="secondary" to="/app/project/existing">
           Add to existing project
         </Button>
       </div>
@@ -113,7 +115,7 @@ function DashboardContent({
                 name={project.name}
                 stageLabel={project.stageLabel}
                 imageUrl={project.imageUrl}
-                onClick={() => navigate(`/project/${project.id}/scope`)}
+                onClick={() => navigate(`/app/project/${project.id}/scope`)}
               />
             ))}
           </div>

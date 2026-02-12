@@ -9,7 +9,7 @@ export function SettingsScreen() {
   return (
     <div className="screen settings-screen">
       <header>
-        <Button variant="secondary" onClick={() => navigate("/")}>
+        <Button variant="secondary" onClick={() => navigate("/app")}>
           Back to dashboard
         </Button>
         <h2>Settings</h2>
@@ -19,7 +19,7 @@ export function SettingsScreen() {
         <h3>Profile</h3>
         <p className="hint">Builder profile details and logo controls.</p>
         <div className="settings-row">
-          <Button variant="secondary" to="/profile">
+          <Button variant="secondary" to="/app/profile">
             Open profile
           </Button>
         </div>
