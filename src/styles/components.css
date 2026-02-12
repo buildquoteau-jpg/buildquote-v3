@@ -15,6 +15,12 @@
   transition: transform 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
 }
 
+.bq-btn:hover,
+.bq-btn:focus-visible,
+.bq-btn:active {
+  color: inherit;
+}
+
 .bq-btn:focus-visible,
 .bq-icon-btn:focus-visible,
 .bq-toggle-btn:focus-visible,
@@ -38,8 +44,10 @@
   box-shadow: var(--bq-shadow-sm);
 }
 
+.bq-btn--primary:focus-visible,
 .bq-btn--primary:hover {
   background: color-mix(in srgb, var(--bq-primary) 92%, black);
+  color: var(--bq-surface);
 }
 
 .bq-btn--secondary {
@@ -48,8 +56,10 @@
   color: var(--bq-primary);
 }
 
+.bq-btn--secondary:focus-visible,
 .bq-btn--secondary:hover {
   background: color-mix(in srgb, var(--bq-bg) 80%, var(--bq-surface));
+  color: var(--bq-primary);
 }
 
 .bq-btn--accent {
@@ -58,8 +68,10 @@
   box-shadow: var(--bq-shadow-sm);
 }
 
+.bq-btn--accent:focus-visible,
 .bq-btn--accent:hover {
   background: color-mix(in srgb, var(--bq-accent) 92%, black);
+  color: var(--bq-surface);
 }
 
 .bq-btn:disabled,
@@ -79,6 +91,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.bq-icon-btn:hover {
+  background: color-mix(in srgb, var(--bq-bg) 80%, var(--bq-surface));
 }
 
 .bq-card {

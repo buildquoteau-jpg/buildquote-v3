@@ -1,48 +1,96 @@
 // S1 - Builder Dashboard
+import type { KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { ProjectCard } from "../../components/ProjectCard";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
+import { IconButton } from "../../components/ui/IconButton";
+import {
+  FALLBACK_PROJECTS,
+  type DashboardProjectCardData,
+  useBuilderDashboardData,
+} from "./useBuilderDashboardData";
 
-const MOCK_PROJECTS = [
-  {
-    id: "p1",
-    name: "Smith Residence",
-    stage: "Framing",
-    projectPhotoUrl: "",
-  },
-  {
-    id: "p2",
-    name: "Garden Studio",
-    stage: "Decking",
-    projectPhotoUrl: "",
-  },
-];
+const hasClerk = Boolean(import.meta.env.VITE_CLERK_PUBLISHABLE_KEY);
+const hasConvex = Boolean(import.meta.env.VITE_CONVEX_URL);
 
-export function DashboardScreen() {
+interface DashboardContentProps {
+  companyName?: string;
+  logoUrl?: string;
+  projectCards: DashboardProjectCardData[];
+  welcomeName?: string;
+  isDataLoading: boolean;
+}
+
+function DashboardContent({
+  companyName,
+  logoUrl,
+  projectCards,
+  welcomeName,
+  isDataLoading,
+}: DashboardContentProps) {
   const navigate = useNavigate();
+  const welcomeHeading = welcomeName ? `Welcome back, ${welcomeName}` : "Welcome back";
 
-  // TODO: get builder from auth context once Clerk + Convex are wired
-  const builder: { logoUrl?: string; companyName?: string } | null = null;
+  const openSandbox = () => {
+    navigate("/project/new?sandbox=1");
+  };
+
+  const handleSandboxKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    openSandbox();
+  };
 
   return (
     <div className="screen dashboard">
       <header className="dashboard-header">
-        {builder?.logoUrl ? (
-          <img
-            src={builder.logoUrl}
-            alt={`${builder.companyName} logo`}
-            className="dashboard-logo"
-          />
-        ) : (
-          <div className="dashboard-logo-placeholder" aria-hidden />
-        )}
-        <div>
-          <h1>Welcome back</h1>
-          {builder?.companyName && <p className="hint">{builder.companyName}</p>}
+        <div className="dashboard-header-left">
+          <div className="dashboard-brand">
+            {logoUrl ? (
+              <img src={logoUrl} alt="Builder logo" className="dashboard-logo" />
+            ) : (
+              <div className="dashboard-logo-placeholder" aria-hidden>
+                BQ
+              </div>
+            )}
+            <div className="dashboard-brand-copy">
+              <strong className="dashboard-brand-title">BuildQuote</strong>
+              {companyName ? (
+                <span className="dashboard-brand-subtitle">{companyName}</span>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="dashboard-header-copy">
+            <h1>{welcomeHeading}</h1>
+          </div>
         </div>
-        <Button variant="secondary" type="button" onClick={() => navigate("/settings")}>
-          Settings
-        </Button>
+
+        <div className="dashboard-header-right">
+          <nav className="dashboard-top-nav" aria-label="Dashboard sections">
+            <Button to="/" variant="secondary" className="dashboard-nav-item is-active">
+              Projects
+            </Button>
+            <Button to="/suppliers" variant="secondary" className="dashboard-nav-item">
+              Suppliers
+            </Button>
+            <Button to="/library" variant="secondary" className="dashboard-nav-item">
+              Library
+            </Button>
+            <Button to="/profile" variant="secondary" className="dashboard-nav-item">
+              Profile
+            </Button>
+          </nav>
+
+          <IconButton
+            type="button"
+            aria-label="Open settings"
+            onClick={() => navigate("/settings")}
+          >
+            {"\u2699\uFE0E"}
+          </IconButton>
+        </div>
       </header>
 
       <div className="primary-actions">
@@ -54,31 +102,65 @@ export function DashboardScreen() {
 
       <section className="project-tiles">
         <h2>Projects</h2>
-        <div className="project-card-list">
-          {MOCK_PROJECTS.map((project) => (
-            <Card key={project.id} className="project-card" compact>
-              {project.projectPhotoUrl ? (
-                <img
-                  src={project.projectPhotoUrl}
-                  alt={`${project.name} site photo`}
-                  className="project-card-thumb"
-                />
-              ) : (
-                <div className="project-card-thumb-placeholder" aria-hidden />
-              )}
-              <div className="project-card-meta">
-                <strong>{project.name}</strong>
-                <span className="bq-badge bq-badge--neutral">{project.stage}</span>
-              </div>
-            </Card>
-          ))}
-        </div>
+
+        {isDataLoading ? (
+          <p className="hint">Loading projects...</p>
+        ) : projectCards.length > 0 ? (
+          <div className="project-card-list">
+            {projectCards.map((project) => (
+              <ProjectCard
+                key={project.id}
+                name={project.name}
+                stageLabel={project.stageLabel}
+                imageUrl={project.imageUrl}
+                onClick={() => navigate(`/project/${project.id}/scope`)}
+              />
+            ))}
+          </div>
+        ) : (
+          <Card className="dashboard-empty" compact>
+            <p className="hint">No projects yet. Start a new project to begin.</p>
+          </Card>
+        )}
       </section>
 
-      <Card className="sandbox" compact>
+      <Card
+        className="sandbox sandbox--interactive"
+        compact
+        role="button"
+        tabIndex={0}
+        onClick={openSandbox}
+        onKeyDown={handleSandboxKeyDown}
+      >
         <h3>Sandbox</h3>
-        <p className="hint">Sandbox (practice - suppliers will not be contacted)</p>
+        <p className="hint">Practice mode. Supplier notifications stay off.</p>
       </Card>
     </div>
   );
+}
+
+function ConnectedDashboardScreen() {
+  const { companyName, logoUrl, projectCards, welcomeName, isDataLoading } =
+    useBuilderDashboardData();
+
+  return (
+    <DashboardContent
+      companyName={companyName}
+      logoUrl={logoUrl}
+      projectCards={projectCards}
+      welcomeName={welcomeName}
+      isDataLoading={isDataLoading}
+    />
+  );
+}
+
+function FallbackDashboardScreen() {
+  return <DashboardContent projectCards={FALLBACK_PROJECTS} isDataLoading={false} />;
+}
+
+export function DashboardScreen() {
+  if (hasClerk && hasConvex) {
+    return <ConnectedDashboardScreen />;
+  }
+  return <FallbackDashboardScreen />;
 }

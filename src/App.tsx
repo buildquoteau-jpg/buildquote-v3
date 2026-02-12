@@ -7,6 +7,7 @@ import { ComponentGroupsScreen } from "./app/project/ComponentGroupsScreen";
 import { BuildUpScreen } from "./app/project/BuildUpScreen";
 import { ReviewScreen } from "./app/project/ReviewScreen";
 import { PreviewScreen } from "./app/project/PreviewScreen";
+import { PlaceholderScreen } from "./app/navigation/PlaceholderScreen";
 
 // Auth
 import { SignInScreen } from "./app/auth/SignInScreen";
@@ -37,6 +38,33 @@ function App() {
 
         {/* S1 — Builder Dashboard */}
         <Route path="/" element={<DashboardScreen />} />
+        <Route
+          path="/suppliers"
+          element={
+            <PlaceholderScreen
+              title="Suppliers"
+              description="Supplier management is not configured yet."
+            />
+          }
+        />
+        <Route
+          path="/library"
+          element={
+            <PlaceholderScreen
+              title="Library"
+              description="Reference materials and templates will appear here."
+            />
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PlaceholderScreen
+              title="Profile"
+              description="Profile details and account controls will appear here."
+            />
+          }
+        />
 
         {/* S2 — Project Setup */}
         <Route path="/project/new" element={<ProjectSetupScreen />} />
@@ -71,6 +99,7 @@ function App() {
 
         {/* ── Settings ── */}
         <Route path="/settings" element={<SettingsScreen />} />
+        <Route path="/app/settings" element={<SettingsScreen />} />
 
         {/* ── Manufacturer Portal ── */}
         <Route path="/manufacturer" element={<ManufacturerDashboardScreen />} />

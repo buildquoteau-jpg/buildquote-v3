@@ -1,143 +1,43 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api";
-import { ImageUploader } from "../../components/ImageUploader";
-import { NewsletterOptIn } from "../../components/NewsletterOptIn";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
-import {
-  builderLogoR2Key,
-  uploadImage,
-  getR2PublicUrl,
-} from "../../lib/r2ImageUpload";
 import "./settings.css";
 
 export function SettingsScreen() {
   const navigate = useNavigate();
-  const builderId: string | null = null;
-  const builder = useQuery(api.builders.getBuilder, builderId ? { builderId } : "skip");
-
-  const updateAuthPref = useMutation(api.builderPreferences.updateAuthPreference);
-  const saveLogo = useMutation(api.builderPreferences.saveBuilderLogo);
-  const removeLogo = useMutation(api.builderPreferences.removeBuilderLogo);
-  const updateMarketing = useMutation(api.builderPreferences.updateMarketingOptIn);
-
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-
-  if (!builderId) {
-    return (
-      <div className="screen settings-screen">
-        <header>
-          <Button variant="secondary" onClick={() => navigate("/")}>← Dashboard</Button>
-          <h2>Builder Profile</h2>
-        </header>
-        <p className="hint">Sign in to access settings.</p>
-      </div>
-    );
-  }
-
-  if (builder === undefined) {
-    return <div className="screen settings-screen">Loading…</div>;
-  }
-
-  const passkeyEnabled = builder?.authPreference?.passkeyEnabled ?? false;
-  const marketingOptIn = builder?.marketingOptIn ?? false;
-
-  const handlePasskeyToggle = async () => {
-    setSaving(true);
-    try {
-      await updateAuthPref({ builderId, passkeyEnabled: !passkeyEnabled });
-      setMessage(!passkeyEnabled ? "Face ID / Passkey enabled." : "Face ID / Passkey disabled.");
-    } catch {
-      setMessage("Failed to update preference.");
-    }
-    setSaving(false);
-  };
-
-  const handleLogoUpload = async (file: File) => {
-    setSaving(true);
-    setMessage(null);
-    try {
-      const key = builderLogoR2Key(builderId, file.name);
-      const result = await uploadImage(file, key);
-      const finalKey = result?.r2Key ?? key;
-      const finalUrl = result?.publicUrl ?? getR2PublicUrl(key);
-      await saveLogo({ builderId, logoR2Key: finalKey, logoUrl: finalUrl });
-      setMessage("Logo saved.");
-    } catch {
-      setMessage("Logo upload failed.");
-    }
-    setSaving(false);
-  };
-
-  const handleLogoRemove = async () => {
-    setSaving(true);
-    try {
-      await removeLogo({ builderId });
-      setMessage("Logo removed.");
-    } catch {
-      setMessage("Failed to remove logo.");
-    }
-    setSaving(false);
-  };
-
-  const handleNewsletterToggle = async (optIn: boolean) => {
-    setSaving(true);
-    try {
-      await updateMarketing({ builderId, optIn });
-      setMessage(optIn ? "Subscribed to updates." : "Unsubscribed.");
-    } catch {
-      setMessage("Failed to update preference.");
-    }
-    setSaving(false);
-  };
 
   return (
     <div className="screen settings-screen">
       <header>
-        <Button variant="secondary" onClick={() => navigate("/")}>← Dashboard</Button>
-        <h2>Builder Profile</h2>
+        <Button variant="secondary" onClick={() => navigate("/")}>
+          Back to dashboard
+        </Button>
+        <h2>Settings</h2>
       </header>
 
-      {message && <div className="settings-message">{message}</div>}
-
       <Card className="settings-section">
-        <h3>Sign-in</h3>
+        <h3>Profile</h3>
+        <p className="hint">Builder profile details and logo controls.</p>
         <div className="settings-row">
-          <div>
-            <strong>Face ID / Passkey</strong>
-            <p className="hint">Use Face ID, Touch ID, or your device PIN for faster sign-in.</p>
-          </div>
-          <Button
-            variant={passkeyEnabled ? "primary" : "secondary"}
-            onClick={handlePasskeyToggle}
-            disabled={saving}
-          >
-            {passkeyEnabled ? "Enabled" : "Enable"}
+          <Button variant="secondary" to="/profile">
+            Open profile
           </Button>
         </div>
       </Card>
 
       <Card className="settings-section">
-        <h3>Upload business logo</h3>
-        <ImageUploader
-          label="Upload business logo"
-          currentUrl={builder?.logoUrl}
-          onFileSelected={handleLogoUpload}
-          onRemove={handleLogoRemove}
-          disabled={saving}
-        />
+        <h3>Billing</h3>
+        <p className="hint">Billing preferences and invoices will appear here.</p>
       </Card>
 
       <Card className="settings-section">
-        <h3>Communication</h3>
-        <NewsletterOptIn
-          checked={marketingOptIn}
-          onChange={handleNewsletterToggle}
-          disabled={saving}
-        />
+        <h3>Sign out</h3>
+        <p className="hint">Return to the sign-in screen.</p>
+        <div className="settings-row">
+          <Button variant="secondary" to="/sign-in">
+            Go to sign in
+          </Button>
+        </div>
       </Card>
     </div>
   );

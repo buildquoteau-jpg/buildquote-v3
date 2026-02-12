@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ClerkProvider } from "@clerk/clerk-react";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
 import "./styles/tokens.css";
 import "./styles/base.css";
 import "./styles/components.css";
@@ -10,8 +11,15 @@ import App from "./App.tsx";
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as
   | string
   | undefined;
+const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
+const convexClient = convexUrl ? new ConvexReactClient(convexUrl) : null;
 
 const app = <App />;
+const appWithConvex = convexClient ? (
+  <ConvexProvider client={convexClient}>{app}</ConvexProvider>
+) : (
+  app
+);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -37,11 +45,11 @@ createRoot(document.getElementById("root")!).render(
           },
         }}
       >
-        {app}
+        {appWithConvex}
       </ClerkProvider>
     ) : (
       <>
-        {app}
+        {appWithConvex}
         {/* Clerk not configured — sign-in screens will show placeholder */}
       </>
     )}
