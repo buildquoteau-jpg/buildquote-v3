@@ -13,10 +13,10 @@ export function DisclaimerBlock() {
       </button>
       {!collapsed && (
         <p className="disclaimer-text">
-          BuildQuote assists with structuring material quote requests only. It
-          does not make engineering, compliance, quantity, or suitability
-          decisions. All selections must be reviewed and confirmed by the builder
-          and relevant professionals.
+          BuildQuote helps structure quote requests from the information
+          provided. Engineering, compliance, quantities, and suitability remain
+          the builder&apos;s responsibility and must be reviewed by relevant
+          professionals.
         </p>
       )}
     </div>

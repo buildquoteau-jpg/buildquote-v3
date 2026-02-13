@@ -537,6 +537,121 @@
   flex-wrap: wrap;
 }
 
+/* ─── Profile Menu ─── */
+
+.profile-menu {
+  position: relative;
+}
+
+.profile-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid var(--bq-border);
+  background: var(--bq-surface);
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.profile-menu-trigger:hover {
+  border-color: color-mix(in srgb, var(--bq-secondary) 42%, var(--bq-border));
+  box-shadow: var(--bq-shadow-sm);
+}
+
+.profile-menu-avatar {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--bq-secondary);
+  line-height: 1;
+}
+
+.profile-menu-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  min-width: 160px;
+  background: var(--bq-surface);
+  border: 1px solid var(--bq-border);
+  border-radius: var(--bq-radius-md);
+  box-shadow: var(--bq-shadow-md);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+}
+
+.profile-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 14px;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.88rem;
+  color: var(--bq-primary);
+  cursor: pointer;
+  transition: background 100ms ease;
+}
+
+.profile-menu-item:hover {
+  background: color-mix(in srgb, var(--bq-bg) 60%, var(--bq-surface));
+}
+
+.profile-menu-item--danger {
+  color: var(--bq-danger);
+}
+
+.profile-menu-divider {
+  border: none;
+  border-top: 1px solid var(--bq-border);
+  margin: 4px 0;
+}
+
+/* ─── RFQ Preview ─── */
+
+.rfq-preview-header {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-3);
+}
+
+.rfq-preview-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--bq-radius-sm);
+  border: 1px solid var(--bq-border);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.rfq-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--bq-space-2);
+}
+
+.rfq-detail-table td {
+  padding: 6px 0;
+  vertical-align: top;
+}
+
+.rfq-detail-table td:first-child {
+  width: 120px;
+  padding-right: var(--bq-space-2);
+}
+
 /* ─── Sign In ─── */
 
 .sign-in-container {

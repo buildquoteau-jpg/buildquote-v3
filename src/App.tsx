@@ -8,7 +8,7 @@ import { StageSelectionScreen } from "./app/project/StageSelectionScreen";
 import { ScopeInputScreen } from "./app/project/ScopeInputScreen";
 import { ComponentGroupsScreen } from "./app/project/ComponentGroupsScreen";
 import { LineItemsScreen } from "./app/project/LineItemsScreen";
-import { SupplierSelectionScreen } from "./app/project/SupplierSelectionScreen";
+import { RfqReviewScreen } from "./app/project/RfqReviewScreen";
 import { RfqPreviewScreen } from "./app/project/RfqPreviewScreen";
 import { SupplierTrackingScreen } from "./app/project/SupplierTrackingScreen";
 import { SuppliersScreen } from "./app/suppliers/SuppliersScreen";
@@ -81,7 +81,7 @@ function App() {
             <Route path="/projects/:projectId/scope" element={<ScopeInputScreen />} />
             <Route path="/projects/:projectId/components" element={<ComponentGroupsScreen />} />
             <Route path="/projects/:projectId/items" element={<LineItemsScreen />} />
-            <Route path="/projects/:projectId/suppliers" element={<SupplierSelectionScreen />} />
+            <Route path="/projects/:projectId/review" element={<RfqReviewScreen />} />
             <Route path="/projects/:projectId/preview" element={<RfqPreviewScreen />} />
             <Route path="/projects/:projectId/tracking" element={<SupplierTrackingScreen />} />
 

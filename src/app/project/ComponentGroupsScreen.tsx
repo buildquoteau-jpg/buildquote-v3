@@ -13,16 +13,88 @@ interface ComponentGroup {
 }
 
 const STAGE_GROUPS: Record<string, string[]> = {
-  Slab: ["Reinforcement Mesh", "Chairs & Spacers", "Edge Form Timbers", "Concrete", "Accessories"],
-  Framing: ["Wall Frames", "Top & Bottom Plates", "Noggings", "Fasteners", "Accessories"],
-  Cladding: ["Cladding Sheets", "Cavity Battens", "Flashings", "Sealants", "Fixings"],
-  Roofing: ["Roofing Sheets", "Ridge Capping", "Flashings", "Screws", "Accessories"],
-  "Decking / Pergola / Outdoor": ["Structural Posts", "Stirrup Anchors", "Concrete", "Fixings", "Accessories"],
-  Services: ["Conduit", "Cable Trays", "Switchboard Components", "Fittings", "Accessories"],
+  "Slab / Footings": [
+    "Reinforcement Mesh",
+    "Chairs & Spacers",
+    "Edge Form Timbers",
+    "Concrete",
+    "Vapour Barrier",
+    "Accessories",
+  ],
+  "Wall Framing": [
+    "Wall Frames",
+    "Top & Bottom Plates",
+    "Noggings",
+    "Bracing",
+    "Fasteners",
+    "Accessories",
+  ],
+  "Roof Framing": [
+    "Trusses",
+    "Ridge Board & Rafters",
+    "Battens",
+    "Hardware & Connectors",
+    "Fasteners",
+    "Accessories",
+  ],
+  Roofing: [
+    "Roofing Sheets",
+    "Ridge Capping",
+    "Flashings",
+    "Gutters & Downpipes",
+    "Fixings & Screws",
+    "Accessories",
+  ],
+  "External Cladding": [
+    "Cladding Sheets",
+    "Cavity Battens",
+    "Flashings",
+    "Sealants",
+    "Fixings",
+    "Accessories",
+  ],
+  "Internal Linings": [
+    "Plasterboard",
+    "Cornices",
+    "Jointing Compounds",
+    "Screws & Fasteners",
+    "Finishing Accessories",
+  ],
+  Services: [
+    "Conduit",
+    "Cable Trays",
+    "Switchboard Components",
+    "Fittings",
+    "Accessories",
+  ],
+  "Decking / Pergola / Outdoor": [
+    "Structural Posts",
+    "Bearers & Joists",
+    "Decking Boards",
+    "Stirrup Anchors",
+    "Fixings",
+    "Accessories",
+  ],
+  "Windows & Doors": [
+    "Windows",
+    "External Doors",
+    "Internal Doors",
+    "Hardware & Locks",
+    "Weatherseals",
+    "Accessories",
+  ],
+  "Insulation / Sarking / Wraps": [
+    "Wall Batts",
+    "Ceiling Batts",
+    "Roof Sarking",
+    "Wall Wrap / Vapour Barrier",
+    "Tape & Accessories",
+  ],
 };
 
 function buildInitialGroups(stage: string): ComponentGroup[] {
-  const names = STAGE_GROUPS[stage] ?? ["General Materials", "Fixings", "Accessories"];
+  const names =
+    STAGE_GROUPS[stage] ?? ["General Materials", "Fixings", "Accessories"];
   return names.map((name, i) => ({
     id: `group-${i}`,
     name,
@@ -37,13 +109,15 @@ export function ComponentGroupsScreen() {
   const [searchParams] = useSearchParams();
   const stage = searchParams.get("stage") ?? "";
 
-  const [groups, setGroups] = useState<ComponentGroup[]>(() => buildInitialGroups(stage));
+  const [groups, setGroups] = useState<ComponentGroup[]>(() =>
+    buildInitialGroups(stage),
+  );
   const [addingGroup, setAddingGroup] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
 
   const handleToggle = (id: string) => {
     setGroups((prev) =>
-      prev.map((g) => (g.id === id ? { ...g, included: !g.included } : g))
+      prev.map((g) => (g.id === id ? { ...g, included: !g.included } : g)),
     );
   };
 
@@ -63,20 +137,31 @@ export function ComponentGroupsScreen() {
   };
 
   const includedCount = groups.filter((g) => g.included).length;
+  const includedNames = groups
+    .filter((g) => g.included)
+    .map((g) => g.name)
+    .join(",");
 
   return (
     <div className="screen component-groups">
       <header>
-        <Button variant="secondary" onClick={() => navigate(`/projects/${projectId}/scope?stage=${encodeURIComponent(stage)}`)}>
-          ← Scope
+        <Button
+          variant="secondary"
+          onClick={() =>
+            navigate(
+              `/projects/${projectId}/scope?stage=${encodeURIComponent(stage)}`,
+            )
+          }
+        >
+          ← Back to Scope
         </Button>
         <h2>Component Groups</h2>
       </header>
 
       <Card>
         <p className="hint">
-          Based on your scope, the following material groups are typically included.
-          Untick any that do not apply, or add a group if required.
+          Based on your scope, the following material groups are typically
+          included. Untick any that do not apply, or add a group if required.
         </p>
 
         <div className="component-group-list">
@@ -89,7 +174,12 @@ export function ComponentGroupsScreen() {
               />
               <span>{group.name}</span>
               {group.source === "ai_suggested" ? (
-                <span className="bq-badge bq-badge--neutral" style={{ marginLeft: "auto" }}>Suggested</span>
+                <span
+                  className="bq-badge bq-badge--neutral"
+                  style={{ marginLeft: "auto" }}
+                >
+                  Suggested
+                </span>
               ) : null}
             </label>
           ))}
@@ -103,11 +193,19 @@ export function ComponentGroupsScreen() {
               placeholder="Component group name"
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") handleAddGroup(); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleAddGroup();
+              }}
               autoFocus
             />
             <div className="actions">
-              <Button variant="secondary" onClick={() => { setAddingGroup(false); setNewGroupName(""); }}>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setAddingGroup(false);
+                  setNewGroupName("");
+                }}
+              >
                 Cancel
               </Button>
               <Button onClick={handleAddGroup} disabled={!newGroupName.trim()}>
@@ -116,7 +214,11 @@ export function ComponentGroupsScreen() {
             </div>
           </div>
         ) : (
-          <Button className="add-group-btn" variant="secondary" onClick={() => setAddingGroup(true)}>
+          <Button
+            className="add-group-btn"
+            variant="secondary"
+            onClick={() => setAddingGroup(true)}
+          >
             + Add additional component group
           </Button>
         )}
@@ -125,7 +227,11 @@ export function ComponentGroupsScreen() {
       <StickyFooter>
         <Button
           disabled={includedCount === 0}
-          onClick={() => navigate(`/projects/${projectId}/items?stage=${encodeURIComponent(stage)}`)}
+          onClick={() =>
+            navigate(
+              `/projects/${projectId}/items?stage=${encodeURIComponent(stage)}&groups=${encodeURIComponent(includedNames)}`,
+            )
+          }
         >
           Continue ({includedCount} groups)
         </Button>

@@ -20,6 +20,7 @@ export function ProfileScreen() {
   const [companyName, setCompanyName] = useState("");
   const [abn, setAbn] = useState("");
   const [acn, setAcn] = useState("");
+  const [businessEmail, setBusinessEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -41,6 +42,7 @@ export function ProfileScreen() {
     setCompanyName(skipDefault(builder.companyName, "BuildQuote Builder"));
     setAbn(builder.abn ?? "");
     setAcn(builder.acn ?? "");
+    setBusinessEmail(builder.businessEmail ?? "");
     setPhone(builder.phone ?? "");
     setAddress(builder.address ?? "");
   }, [builder]);
@@ -57,6 +59,7 @@ export function ProfileScreen() {
       companyName: companyName.trim(),
       abn: abn.trim() || undefined,
       acn: acn.trim() || undefined,
+      businessEmail: businessEmail.trim() || undefined,
       phone: phone.trim() || undefined,
       address: address.trim() || undefined,
       profileComplete: true,
@@ -100,6 +103,9 @@ export function ProfileScreen() {
         </div>
         <div className="field">
           <TextField label="ACN" value={acn} onChange={(e) => setAcn(e.target.value)} placeholder="XXX XXX XXX" />
+        </div>
+        <div className="field">
+          <TextField label="Business email" value={businessEmail} onChange={(e) => setBusinessEmail(e.target.value)} placeholder="quotes@yourcompany.com.au" />
         </div>
         <div className="field">
           <TextField label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="04XX XXX XXX" />
