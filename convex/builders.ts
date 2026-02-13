@@ -4,6 +4,45 @@ import { mutation, query } from "./_generated/server";
 // OWNS: builder account CRUD
 // DOES NOT DECIDE: auth, permissions, AI behaviour
 
+export const getOrCreateCurrentBuilder = mutation({
+args: {},
+handler: async (ctx) => {
+const identity = await ctx.auth.getUserIdentity();
+if (!identity) throw new Error("Not authenticated");
+
+const clerkUserId = identity.subject; // stable per Clerk user
+const email =
+identity.email?.trim().toLowerCase() ??
+(identity.tokenIdentifier?.includes("|")
+? identity.tokenIdentifier.split("|").pop()!.toLowerCase()
+: "");
+
+const existing = await ctx.db
+.query("builders")
+.withIndex("by_clerkUserId", (q) => q.eq("clerkUserId", clerkUserId))
+.first();
+
+if (existing) return existing;
+
+// Defaults: only used until the builder completes profile
+const firstName = (identity.givenName || "Builder").trim();
+const lastName = (identity.familyName || "User").trim();
+const companyName = "BuildQuote Builder";
+
+const builderId = await ctx.db.insert("builders", {
+clerkUserId,
+email,
+firstName,
+lastName,
+companyName,
+profileComplete: false,
+createdAt: Date.now(),
+});
+
+return await ctx.db.get(builderId);
+},
+});
+
 export const getBuilder = query({
   args: { builderId: v.id("builders") },
   handler: async (ctx, args) => {

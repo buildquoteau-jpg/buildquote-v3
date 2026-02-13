@@ -18,6 +18,7 @@ import { SettingsScreen } from "./app/settings/SettingsScreen";
 import { SignInPage } from "./pages/SignInPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { LandingPage } from "./pages/LandingPage";
+import { SignOutPage } from "./pages/SignOutPage";
 import "./App.css";
 
 const hasConvex = Boolean(import.meta.env.VITE_CONVEX_URL);
@@ -66,6 +67,8 @@ function App() {
         <Route element={<ProtectedRoute />}>
           {/* Profile is outside RequireProfile to allow onboarding */}
           <Route path="/profile" element={<ProfileScreen />} />
+          <Route path="/sign-out" element={<SignOutPage />} />
+
 
           {/* All other routes require a completed builder profile */}
           <Route element={hasConvex ? <RequireProfile /> : <Outlet />}>

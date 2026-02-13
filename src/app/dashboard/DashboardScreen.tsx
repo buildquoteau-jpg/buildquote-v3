@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { ProjectCard } from "../../components/ProjectCard";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
+import { Link } from "react-router-dom";
 import {
   FALLBACK_PROJECTS,
   type DashboardProjectCardData,
