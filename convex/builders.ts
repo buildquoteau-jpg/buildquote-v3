@@ -61,8 +61,19 @@ export const getBuilderByEmail = query({
   },
 });
 
+export const getBuilderByClerkUserId = query({
+  args: { clerkUserId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("builders")
+      .withIndex("by_clerkUserId", (q) => q.eq("clerkUserId", args.clerkUserId))
+      .first();
+  },
+});
+
 export const createBuilder = mutation({
   args: {
+    clerkUserId: v.optional(v.string()),
     firstName: v.string(),
     lastName: v.string(),
     companyName: v.string(),
@@ -83,6 +94,7 @@ export const createBuilder = mutation({
 export const upsertBuilderByEmail = mutation({
   args: {
     email: v.string(),
+    clerkUserId: v.optional(v.string()),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
     companyName: v.optional(v.string()),
@@ -93,25 +105,41 @@ export const upsertBuilderByEmail = mutation({
       throw new Error("Email is required");
     }
 
-    const existing = await ctx.db
-      .query("builders")
-      .withIndex("by_email", (q) => q.eq("email", email))
-      .first();
+    // Prefer clerkUserId lookup if available, fall back to email
+    let existing = null;
+    if (args.clerkUserId) {
+      existing = await ctx.db
+        .query("builders")
+        .withIndex("by_clerkUserId", (q) => q.eq("clerkUserId", args.clerkUserId))
+        .first();
+    }
+    if (!existing) {
+      existing = await ctx.db
+        .query("builders")
+        .withIndex("by_email", (q) => q.eq("email", email))
+        .first();
+    }
 
     const firstName = args.firstName?.trim() || "Builder";
     const lastName = args.lastName?.trim() || "User";
     const companyName = args.companyName?.trim() || "BuildQuote Builder";
 
     if (existing) {
-      await ctx.db.patch(existing._id, {
+      const patch: Record<string, unknown> = {
         firstName: existing.firstName || firstName,
         lastName: existing.lastName || lastName,
         companyName: existing.companyName || companyName,
-      });
+      };
+      // Always stamp clerkUserId if provided and not already set
+      if (args.clerkUserId && !existing.clerkUserId) {
+        patch.clerkUserId = args.clerkUserId;
+      }
+      await ctx.db.patch(existing._id, patch);
       return existing._id;
     }
 
     return await ctx.db.insert("builders", {
+      clerkUserId: args.clerkUserId,
       firstName,
       lastName,
       companyName,
@@ -127,6 +155,7 @@ export const updateBuilder = mutation({
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
     companyName: v.optional(v.string()),
+    businessEmail: v.optional(v.string()),
     phone: v.optional(v.string()),
     address: v.optional(v.string()),
     abn: v.optional(v.string()),

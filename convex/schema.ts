@@ -4,36 +4,32 @@ import { v } from "convex/values";
 export default defineSchema({
   // 1. builders — account owner
   builders: defineTable({
-clerkUserId: v.optional(v.string()),
-
-firstName: v.string(),
-lastName: v.string(),
-companyName: v.string(),
-
-email: v.string(), // Clerk sign-in email
-businessEmail: v.optional(v.string()), // Used for RFQs
-
-phone: v.optional(v.string()),
-address: v.optional(v.string()),
-abn: v.optional(v.string()),
-acn: v.optional(v.string()),
-
-profileComplete: v.optional(v.boolean()),
-
-authPreference: v.optional(
-v.object({ passkeyEnabled: v.optional(v.boolean()) })
-),
-
-logoR2Key: v.optional(v.string()),
-logoUrl: v.optional(v.string()),
-
-marketingOptIn: v.optional(v.boolean()),
-marketingOptInAt: v.optional(v.number()),
-
-createdAt: v.number(),
-})
-.index("by_email", ["email"])
-.index("by_clerkUserId", ["clerkUserId"]),
+    clerkUserId: v.optional(v.string()),
+    firstName: v.string(),
+    lastName: v.string(),
+    companyName: v.string(),
+    email: v.string(),
+    businessEmail: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    address: v.optional(v.string()),
+    abn: v.optional(v.string()),
+    acn: v.optional(v.string()),
+    // Onboarding: true once builder completes profile form
+    profileComplete: v.optional(v.boolean()),
+    // Feature 1: passkey preference
+    authPreference: v.optional(
+      v.object({ passkeyEnabled: v.optional(v.boolean()) })
+    ),
+    // Feature 2: logo upload
+    logoR2Key: v.optional(v.string()),
+    logoUrl: v.optional(v.string()),
+    // Feature 4: newsletter opt-in
+    marketingOptIn: v.optional(v.boolean()),
+    marketingOptInAt: v.optional(v.number()),
+    createdAt: v.number(),
+  })
+    .index("by_email", ["email"])
+    .index("by_clerkUserId", ["clerkUserId"]),
 
   // 2. projects — long-lived container for work
   projects: defineTable({

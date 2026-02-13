@@ -13,6 +13,7 @@ export function useBuilderAccount() {
       ? user.unsafeMetadata.companyName
       : undefined;
 
+  const clerkUserId = user?.id ?? "";
   const email = user?.primaryEmailAddress?.emailAddress?.trim().toLowerCase() ?? "";
   const builder = useQuery(
     api.builders.getBuilderByEmail,
@@ -30,6 +31,7 @@ export function useBuilderAccount() {
 
     return await upsertBuilderByEmail({
       email,
+      clerkUserId: clerkUserId || undefined,
       firstName: user?.firstName ?? undefined,
       lastName: user?.lastName ?? undefined,
       companyName: companyNameFromMetadata,
@@ -44,12 +46,14 @@ export function useBuilderAccount() {
     autoEnsureStartedRef.current = true;
     void upsertBuilderByEmail({
       email,
+      clerkUserId: clerkUserId || undefined,
       firstName: user?.firstName ?? undefined,
       lastName: user?.lastName ?? undefined,
       companyName: companyNameFromMetadata,
     });
   }, [
     builder,
+    clerkUserId,
     companyNameFromMetadata,
     email,
     isUserLoaded,
