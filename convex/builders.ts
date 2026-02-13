@@ -92,6 +92,7 @@ export const updateBuilder = mutation({
     address: v.optional(v.string()),
     abn: v.optional(v.string()),
     acn: v.optional(v.string()),
+    profileComplete: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const { builderId, ...updates } = args;

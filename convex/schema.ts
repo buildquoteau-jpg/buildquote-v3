@@ -12,6 +12,8 @@ export default defineSchema({
     address: v.optional(v.string()),
     abn: v.optional(v.string()),
     acn: v.optional(v.string()),
+    // Onboarding: true once builder completes profile form
+    profileComplete: v.optional(v.boolean()),
     // Feature 1: passkey preference
     authPreference: v.optional(
       v.object({ passkeyEnabled: v.optional(v.boolean()) })

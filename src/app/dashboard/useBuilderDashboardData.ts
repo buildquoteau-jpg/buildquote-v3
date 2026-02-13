@@ -108,8 +108,13 @@ export function useBuilderDashboardData() {
   }, [projects, quoteRequests]);
 
   const builderBusinessName = readBuilderBusinessName(builder);
-  const welcomeName =
-    clerkFirstName || builder?.firstName?.trim() || builderBusinessName || undefined;
+
+  // Only show "Welcome back, <Name>" when profile is complete (Convex record).
+  // Never derive the welcome name from Clerk alone.
+  const welcomeName = builder?.profileComplete
+    ? (builder.firstName?.trim() || builderBusinessName || undefined)
+    : undefined;
+
   const companyName =
     (builder?.companyName ?? builderBusinessName).trim() || undefined;
 
